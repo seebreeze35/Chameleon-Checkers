@@ -21,5 +21,6 @@ class piece:
         self.x = x
         self.y = y        
 
-    def move(self, i):
-        self.y+=i
+    def move(self, x, y):
+        self.x = x
+        self.y = y

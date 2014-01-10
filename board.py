@@ -3,10 +3,9 @@
 from piece import piece
 from space import space
 
-#todo: create function to place pieces on the proper spaces
-#      create a print out of the current board status
-#      add ability to move a piece to another space
-#      add rules based on piece type
+#todo:  add rules based on piece type
+#       check for valid moves
+
 
 class board:
     
@@ -55,28 +54,37 @@ class board:
         self.setup()
 
     def getSpace(self, x, y):
+        #input assumes type is int
         to_return = None
         for row in self.spaces:
             for space in row:
                 if space.x == x and space.y == y:
                     to_return = space
-
         return to_return
 
-    def updatePiece(self, piece):
-        #this needs to be redone
-        #I need error checking to make sure Im not going on top of another piece
-        #also so that it does not go off the board
-        #if so it needs to kick back and ask the player to redo the move
+    def checkMove(self, piece, mx, my):
+        #need to check to see if the space is too far away
+        #need to check if the space in between is occupied by enemy piece
+        to_return = None
+        space = self.getSpace(mx, my)
+        if space.piece == None:
+            if space.color != 'Black':
+                print 'Space not black!'
+                to_return = True
+            else:
+                to_return = False
+        else:
+            print 'Space occupied!'
+            to_return = True
+        return to_return
+
+    def updatePiece(self, piece, mx, my):
+        #this probably needs to be redone
         x,y = piece.getPos()
         space = self.getSpace(x, y)
         space.piece = None
-        if piece.color == 'Black':
-            piece.move(-1)
-        if piece.color == 'Red':
-            piece.move(1)
+        piece.move(mx, my)
         x,y = piece.getPos()
-        print str(x)+' '+str(y) 
         space = self.getSpace(x,y)
         space.setPiece(piece)
         
@@ -95,3 +103,13 @@ class board:
             print str(count)+' '+rowLines
             count -=1
         print "   0  1  2  3  4  5  6  7 "
+
+    def win(self):
+        if len(self.Black)==0:
+            print 'Red wins!'
+            return False
+        elif len(self.Red)==0:
+            print 'Black wins!'
+            return False
+        else:
+            return True

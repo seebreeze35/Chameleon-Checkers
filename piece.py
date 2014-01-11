@@ -9,6 +9,7 @@ class piece:
         self.inPlay = True
         self.x = None
         self.y = None
+        self.Type = 'Regular'
         
     def getPos(self):
         return self.x, self.y

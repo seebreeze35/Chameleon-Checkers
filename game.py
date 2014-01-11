@@ -24,6 +24,7 @@ def turns(turn):
     return turn, pieces
 
 def inputPiece():
+    print 'Input piece'
     x = raw_input("Select piece x: ")
     y = raw_input("Select piece y: ")
     return x, y
@@ -34,21 +35,31 @@ def inputMove():
     y = raw_input("Select y: ")
     return x, y
 
-while gameLoop:
-    moveInvalid = True
-    
-    inX, inY = inputPiece()
+def checkPiece(pieces, x, y):
     
     for piece in pieces:
-        x,y = piece.getPos()
-        if int(inX) == x and int(inY) == y:
-            while(moveInvalid):
-                mx, my = inputMove()
-                moveInvalid = gameboard.checkMove(piece, int(mx), int(my))
-            gameboard.updatePiece(piece, int(mx), int(my))
-            gameboard.printBoard()
-            turn, pieces = turns(turn)
-            break
+        if piece.x == x and piece.y == y:
+            return False, piece
+            
+    return True, None
+
+while gameLoop:
+    moveInvalid = True
+    pieceInvalid = True
+
+#need a smart way to get out of moving a piece if player no longer wishes to move said piece
+    while(pieceInvalid):
+        inX, inY = inputPiece()
+        pieceInvalid, piece = checkPiece(pieces, int(inX), int(inY))
+
+    x,y = piece.getPos()
+    if int(inX) == x and int(inY) == y:
+        while(moveInvalid):
+            mx, my = inputMove()
+            moveInvalid = gameboard.checkMove(piece, int(mx), int(my))
+        gameboard.updatePiece(piece, int(mx), int(my))
+        gameboard.printBoard()
+        turn, pieces = turns(turn)
 
     gameLoop = gameboard.win()
 

@@ -62,15 +62,50 @@ class board:
                     to_return = space
         return to_return
 
+
+    def removePiece(self, piece):
+        try:
+            self.Black.remove(piece)
+        except:
+            try:
+                self.Red.remove(piece)
+            except:
+                print 'Fatal error removing piece'
+
+
+    #Todo this is big probably need to refactor this down to be easier to read
     def checkMove(self, piece, mx, my):
-        #need to check to see if the space is too far away
-        #need to check if the space in between is occupied by enemy piece
+        #True is bad 
+        #False is good
         to_return = None
         space = self.getSpace(mx, my)
         if space.piece == None:
             if space.color != 'Black':
                 print 'Space not black!'
                 to_return = True
+            #check change in column
+            elif mx == piece.x:
+                print 'Not a valid move1!'
+                to_return = True
+                
+            #check if a valid capture move
+            elif abs(mx-piece.x)%2 == 0:
+                if self.getSpace(mx-1, my+1)==None:
+                    spaceBetween = self.getSpace(mx+1, my+1)
+                else:
+                    spaceBetween = self.getSpace(mx-1, my-1)
+                if spaceBetween.piece == None or spaceBetween.piece.color == piece.color:
+                        print 'Not a valid move2!'
+                        to_return = True
+                else:
+                    print 'Captured '+spaceBetween.piece.color+' '+str(spaceBetween.piece.id)
+                    self.removePiece(spaceBetween.piece)
+                    spaceBetween.piece = None
+                    to_return = False
+            elif abs(mx-piece.x)>1:
+                if abs(mx-piece.x)%2==1:
+                    print 'Not a valid move3!'
+                    to_return = True
             else:
                 to_return = False
         else:

@@ -22,12 +22,16 @@ class space:
 
     def checkPiece(self):
         if self.piece != None:
+            print '39158792845792845'
             x, y = self.piece.getPos()
             if self.x != x or self.y != y:
                 print 'todo'
         
     def printSpace(self):
         if self.piece !=None:
-            return '['+self.piece.color[:1]+']'
+            name = self.piece.color[:1]
+            if self.piece.Type == 'Regular':
+                name = name.lower()
+            return '['+name+']'
         else:
             return '[ ]'

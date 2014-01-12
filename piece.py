@@ -25,3 +25,8 @@ class piece:
     def move(self, x, y):
         self.x = x
         self.y = y
+
+    def King(self):
+        if self.Type == 'Regular':
+            self.Type == 'King'
+        

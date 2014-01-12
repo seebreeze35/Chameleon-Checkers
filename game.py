@@ -24,42 +24,43 @@ def turns(turn):
     return turn, pieces
 
 def inputPiece():
-    print 'Input piece'
-    x = raw_input("Select piece x: ")
-    y = raw_input("Select piece y: ")
-    return x, y
+    pieceInvalid = True
+    while(pieceInvalid):
+        print 'Input piece'
+        x = raw_input("Select piece x: ")
+        y = raw_input("Select piece y: ")
+        pieceInvalid, piece = checkPiece(pieces, int(x), int(y))
+    return piece
 
 def inputMove():
+
     print 'Move to?'
     x = raw_input("Select x: ")
     y = raw_input("Select y: ")
     return x, y
 
 def checkPiece(pieces, x, y):
-    
     for piece in pieces:
         if piece.x == x and piece.y == y:
             return False, piece
-            
+    
+    print 'Not valid please enter another piece.'
     return True, None
 
 while gameLoop:
     moveInvalid = True
-    pieceInvalid = True
 
-#need a smart way to get out of moving a piece if player no longer wishes to move said piece
-    while(pieceInvalid):
-        inX, inY = inputPiece()
-        pieceInvalid, piece = checkPiece(pieces, int(inX), int(inY))
+    piece = inputPiece()
 
-    x,y = piece.getPos()
-    if int(inX) == x and int(inY) == y:
-        while(moveInvalid):
+    while(moveInvalid):
+        mx, my = inputMove()
+        if mx == '' or my == '':
+            piece = inputPiece()
             mx, my = inputMove()
-            moveInvalid = gameboard.checkMove(piece, int(mx), int(my))
-        gameboard.updatePiece(piece, int(mx), int(my))
-        gameboard.printBoard()
-        turn, pieces = turns(turn)
+        moveInvalid = gameboard.checkMove(piece, int(mx), int(my))
+    gameboard.updatePiece(piece, int(mx), int(my))
+    gameboard.printBoard()
+    turn, pieces = turns(turn)
 
     gameLoop = gameboard.win()
 

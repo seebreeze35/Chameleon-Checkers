@@ -14,6 +14,8 @@ class board:
         self.spaces = []
         self.Red = []
         self.Black = []
+        self.BlackEnd = None
+        self.RedEnd = None
         self.setup()
         
     def setup(self):
@@ -30,25 +32,47 @@ class board:
         self.spaces.reverse()
 
     def createPieces(self):
+#            input=raw_input('Pick color (R or B): ')
         for ID in range(12):
             self.Red.append(piece('Red', ID))
-            self.Black.append(piece('Black', ID))            
+            self.Black.append(piece('Black', ID))           
 
     def setPieces(self):
         redIter = 0
         blackIter = 0
-        for row in range(8):
-            if row < 3:
-                for space in self.spaces[row]:
-                    if space.color == 'Black':
-                        space.setPiece(self.Black[blackIter])
-                        blackIter+=1
-            if row > 4:
-                for space in self.spaces[row]:
-                    if space.color == 'Black':
-                        space.setPiece(self.Red[redIter])
-                        redIter+=1
 
+        def fillRed(row, redIter):
+            for space in self.spaces[row]:
+                if space.color == 'Black':
+                    space.setPiece(self.Red[redIter])
+                    redIter +=1
+            return redIter
+                    
+        def fillBlack(row, blackIter):
+            for space in self.spaces[row]:
+                if space.color == 'Black':
+                    space.setPiece(self.Black[blackIter])
+                    blackIter +=1
+            return blackIter
+
+        input = raw_input('Pick color (R or B): ')
+        
+        if input == 'B' or input == 'b':
+            for row in range(8):
+                if row < 3:
+                    redIter = fillRed(row, redIter)
+                elif row > 4:
+                    blackIter = fillBlack(row, blackIter)
+            self.BlackEnd = 7
+            self.RedEnd = 0 
+        elif input == 'R' or input == 'r':
+            for row in range(8):
+                if row < 3:
+                    blackIter = fillBlack(row, blackIter)
+                elif row > 4:
+                    redIter = fillRed(row, redIter)
+            self.BlackEnd = 0
+            self.RedEnd = 7
 
     def reset(self):
         self.setup()
@@ -62,6 +86,20 @@ class board:
                     to_return = space
         return to_return
 
+    def getSpaceBetween(self, piece, x, y):
+        to_return = None
+
+        if x > piece.x:
+            if y > piece.y:
+                to_return = self.getSpace(x-1, y-1)
+            elif y < piece.y:
+                to_return = self.getSpace(x-1, y+1)
+        elif x < piece.x:
+            if y > piece.y:
+                to_return = self.getSpace(x+1, y-1)
+            elif y < piece.y:
+                to_return = self.getSpace(x+1, y+1)
+        return to_return
 
     def removePiece(self, piece):
         try:
@@ -90,13 +128,11 @@ class board:
                 
             #check if a valid capture move
             elif abs(mx-piece.x)%2 == 0:
-                if self.getSpace(mx-1, my+1)==None:
-                    spaceBetween = self.getSpace(mx+1, my+1)
-                else:
-                    spaceBetween = self.getSpace(mx-1, my-1)
+                spaceBetween = self.getSpaceBetween(piece, mx, my)
+
                 if spaceBetween.piece == None or spaceBetween.piece.color == piece.color:
-                        print 'Not a valid move2!'
-                        to_return = True
+                    print 'Not a valid move2!'
+                    to_return = True
                 else:
                     print 'Captured '+spaceBetween.piece.color+' '+str(spaceBetween.piece.id)
                     self.removePiece(spaceBetween.piece)
@@ -106,6 +142,15 @@ class board:
                 if abs(mx-piece.x)%2==1:
                     print 'Not a valid move3!'
                     to_return = True
+            elif piece.Type != 'King':
+                print 'todo'
+            elif my == 7 or my == 0:
+                if piece.color == 'Red':
+                    if my == self.BlackEnd:
+                        piece.King()
+                elif piece.color == 'Black':
+                    if my == self.RedEnd:
+                        piece.King()
             else:
                 to_return = False
         else:

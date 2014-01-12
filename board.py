@@ -56,7 +56,7 @@ class board:
             return blackIter
 
         input = raw_input('Pick color (R or B): ')
-        
+        input = input[:1]
         if input == 'B' or input == 'b':
             for row in range(8):
                 if row < 3:
@@ -144,18 +144,23 @@ class board:
                     to_return = True
             elif piece.Type != 'King':
                 print 'todo'
-            elif my == 7 or my == 0:
-                if piece.color == 'Red':
-                    if my == self.BlackEnd:
-                        piece.King()
-                elif piece.color == 'Black':
-                    if my == self.RedEnd:
-                        piece.King()
             else:
                 to_return = False
         else:
             print 'Space occupied!'
             to_return = True
+
+        if to_return == False:
+            print my
+            if my == 7 or my == 0:
+                print my
+                if piece.color == 'Red':
+                    print my
+                    piece.King()
+                    print piece.Type
+                elif piece.color == 'Black':
+                    piece.King()
+
         return to_return
 
     def updatePiece(self, piece, mx, my):

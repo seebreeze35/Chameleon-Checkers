@@ -27,6 +27,5 @@ class piece:
         self.y = y
 
     def King(self):
-        if self.Type == 'Regular':
-            self.Type == 'King'
+        self.Type = 'King'
         

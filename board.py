@@ -14,8 +14,6 @@ class board:
         self.spaces = []
         self.Red = []
         self.Black = []
-        self.BlackEnd = None
-        self.RedEnd = None
         self.setup()
         
     def setup(self):
@@ -32,7 +30,6 @@ class board:
         self.spaces.reverse()
 
     def createPieces(self):
-#            input=raw_input('Pick color (R or B): ')
         for ID in range(12):
             self.Red.append(piece('Red', ID))
             self.Black.append(piece('Black', ID))           
@@ -41,38 +38,31 @@ class board:
         redIter = 0
         blackIter = 0
 
-        def fillRed(row, redIter):
+        def fillRow(row, Iter, color):
             for space in self.spaces[row]:
                 if space.color == 'Black':
-                    space.setPiece(self.Red[redIter])
-                    redIter +=1
-            return redIter
+                    if color == 'Red':
+                        space.setPiece(self.Red[Iter])
+                        Iter +=1
+                    else:
+                        space.setPiece(self.Black[Iter])
+                        Iter +=1
+            return Iter
                     
-        def fillBlack(row, blackIter):
-            for space in self.spaces[row]:
-                if space.color == 'Black':
-                    space.setPiece(self.Black[blackIter])
-                    blackIter +=1
-            return blackIter
-
         input = raw_input('Pick color (R or B): ')
         input = input[:1]
         if input == 'B' or input == 'b':
             for row in range(8):
                 if row < 3:
-                    redIter = fillRed(row, redIter)
+                    redIter = fillRow(row, redIter, 'Red')
                 elif row > 4:
-                    blackIter = fillBlack(row, blackIter)
-            self.BlackEnd = 7
-            self.RedEnd = 0 
+                    blackIter = fillRow(row, blackIter, 'Black') 
         elif input == 'R' or input == 'r':
             for row in range(8):
                 if row < 3:
-                    blackIter = fillBlack(row, blackIter)
+                    blackIter = fillRow(row, blackIter, 'Black')
                 elif row > 4:
-                    redIter = fillRed(row, redIter)
-            self.BlackEnd = 0
-            self.RedEnd = 7
+                    redIter = fillRow(row, redIter, 'Red')
 
     def reset(self):
         self.setup()
@@ -110,6 +100,17 @@ class board:
             except:
                 print 'Fatal error removing piece'
 
+    def checkCapture(self, piece, mx, my):
+        spaceBetween = self.getSpaceBetween(piece, mx, my)
+        
+        if spaceBetween.piece == None or spaceBetween.piece.color == piece.color:
+            print 'Not a valid move!'
+            return True
+        else:
+            print 'Captured '+spaceBetween.piece.color+' '+str(spaceBetween.piece.id)
+            self.removePiece(spaceBetween.piece)
+            spaceBetween.piece = None
+            return False
 
     #Todo this is big probably need to refactor this down to be easier to read
     def checkMove(self, piece, mx, my):
@@ -123,27 +124,17 @@ class board:
                 to_return = True
             #check change in column
             elif mx == piece.x:
-                print 'Not a valid move1!'
+                print 'Not a valid move!'
                 to_return = True
-                
             #check if a valid capture move
             elif abs(mx-piece.x)%2 == 0:
-                spaceBetween = self.getSpaceBetween(piece, mx, my)
-
-                if spaceBetween.piece == None or spaceBetween.piece.color == piece.color:
-                    print 'Not a valid move2!'
-                    to_return = True
-                else:
-                    print 'Captured '+spaceBetween.piece.color+' '+str(spaceBetween.piece.id)
-                    self.removePiece(spaceBetween.piece)
-                    spaceBetween.piece = None
-                    to_return = False
+                to_return = self.checkCapture(piece, mx, my)
             elif abs(mx-piece.x)>1:
                 if abs(mx-piece.x)%2==1:
-                    print 'Not a valid move3!'
+                    print 'Not a valid move!'
                     to_return = True
             elif piece.Type != 'King':
-                print 'todo'
+                print 'todo prevent non king piece moving backward'
             else:
                 to_return = False
         else:
@@ -151,15 +142,8 @@ class board:
             to_return = True
 
         if to_return == False:
-            print my
             if my == 7 or my == 0:
-                print my
-                if piece.color == 'Red':
-                    print my
-                    piece.King()
-                    print piece.Type
-                elif piece.color == 'Black':
-                    piece.King()
+                piece.King()
 
         return to_return
 
@@ -195,6 +179,7 @@ class board:
             return False
         elif len(self.Red)==0:
             print 'Black wins!'
+
             return False
         else:
             return True

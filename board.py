@@ -14,6 +14,8 @@ class board:
         self.spaces = []
         self.Red = []
         self.Black = []
+        self.blackDirection = None
+        self.redDirection = None
         self.setup()
         
     def setup(self):
@@ -55,14 +57,18 @@ class board:
             for row in range(8):
                 if row < 3:
                     redIter = fillRow(row, redIter, 'Red')
+                    self.redDirection = 'Down'
                 elif row > 4:
                     blackIter = fillRow(row, blackIter, 'Black') 
+                    self.blackDirection = 'Up'
         elif input == 'R' or input == 'r':
             for row in range(8):
                 if row < 3:
                     blackIter = fillRow(row, blackIter, 'Black')
+                    self.blackDirection = 'Down'
                 elif row > 4:
                     redIter = fillRow(row, redIter, 'Red')
+                    self.redDirection = 'Up'
 
     def reset(self):
         self.setup()
@@ -111,6 +117,32 @@ class board:
             self.removePiece(spaceBetween.piece)
             spaceBetween.piece = None
             return False
+    
+    def checkForward(self, piece, my):
+
+        def forward(piece, my):
+            if my > piece.y:
+                return False
+            else:
+                print 'Not a valid move!'
+                return True
+        def backward(piece, my):
+            if my < piece.y:
+                return False
+            else:
+                print 'Not a valid move!'
+                return True
+
+        if piece.color == 'Red':
+            if self.redDirection == 'Up':
+                return forward(piece, my)
+            else:
+                return backward(piece, my)
+        elif piece.color == 'Black':
+            if self.blackDirection == 'Up':
+                return forward(piece, my)
+            else:
+                return backward(piece, my)
 
     #Todo this is big probably need to refactor this down to be easier to read
     def checkMove(self, piece, mx, my):
@@ -134,7 +166,7 @@ class board:
                     print 'Not a valid move!'
                     to_return = True
             elif piece.Type != 'King':
-                print 'todo prevent non king piece moving backward'
+                to_return = self.checkForward(piece, my)
             else:
                 to_return = False
         else:

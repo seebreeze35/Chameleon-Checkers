@@ -1,15 +1,8 @@
 #! /usr/bin/python
 
+import argparse
 from board import board
 
-gameboard = board()
-
-gameboard.printBoard()
-
-gameLoop = True
-turn = 'Red'
-pieces = gameboard.Red
-print 'It is Red\'s turn.'
 
 def turns(turn):
     if turn == 'Red':
@@ -23,7 +16,7 @@ def turns(turn):
 
     return turn, pieces
 
-def inputPiece():
+def inputPiece(pieces):
     pieceInvalid = True
     while(pieceInvalid):
         print 'Input piece'
@@ -47,21 +40,43 @@ def checkPiece(pieces, x, y):
     print 'Not valid please enter another piece.'
     return True, None
 
-while gameLoop:
-    moveInvalid = True
 
-    piece = inputPiece()
-
-    while(moveInvalid):
-        mx, my = inputMove()
-        if mx == '' or my == '':
-            piece = inputPiece()
-            mx, my = inputMove()
-        moveInvalid = gameboard.checkMove(piece, int(mx), int(my))
-    gameboard.updatePiece(piece, int(mx), int(my))
+def playerGame():
+#    gameboard = board(playerColor)
+    
     gameboard.printBoard()
-    turn, pieces = turns(turn)
+    
+    gameLoop = True
+    turn = 'Red'
+    pieces = gameboard.Red
+    print 'It is Red\'s turn.'
 
-    gameLoop = gameboard.win()
+    while gameLoop:
+        moveInvalid = True
+        
+        piece = inputPiece(pieces)
+        
+        while(moveInvalid):
+            mx, my = inputMove()
+            if mx == '' or my == '':
+                piece = inputPiece(pieces)
+                mx, my = inputMove()
+            moveInvalid = gameboard.checkMove(piece, int(mx), int(my))
+        gameboard.updatePiece(piece, int(mx), int(my))
+        gameboard.printBoard()
+        turn, pieces = turns(turn)
+
+        gameLoop = gameboard.win()
 
 
+
+parser = argparse.ArgumentParser(description='Input commands.')
+
+parser.add_argument('--color', default='Red', choices=['Red', 'Black'], help='Select a color you wish to play agaisnt the computer r or b')
+#add another argument for playing agaisnt the computer defaulting to yes
+
+args = vars(parser.parse_args())
+
+gameboard = board(args['color'])
+
+playerGame()

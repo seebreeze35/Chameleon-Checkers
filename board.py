@@ -9,13 +9,14 @@ from space import space
 
 class board:
     
-    def __init__(self):
+    def __init__(self, color):
         self.name = 'Board'
         self.spaces = []
         self.Red = []
         self.Black = []
         self.blackDirection = None
         self.redDirection = None
+        self.playerColor = color
         self.setup()
         
     def setup(self):
@@ -51,9 +52,8 @@ class board:
                         Iter +=1
             return Iter
                     
-        input = raw_input('Pick color (R or B): ')
-        input = input[:1]
-        if input == 'B' or input == 'b':
+
+        if self.playerColor == 'Black':  
             for row in range(8):
                 if row < 3:
                     redIter = fillRow(row, redIter, 'Red')
@@ -61,7 +61,7 @@ class board:
                 elif row > 4:
                     blackIter = fillRow(row, blackIter, 'Black') 
                     self.blackDirection = 'Up'
-        elif input == 'R' or input == 'r':
+        elif self.playerColor == 'Red':
             for row in range(8):
                 if row < 3:
                     blackIter = fillRow(row, blackIter, 'Black')

@@ -2,34 +2,54 @@
 
 class move:
     def __init__(self, pieces):
-        self.inputX = None
-        self.inputY = None
-        self.moveX = None
-        self.moveY = None
+        self.inX = None
+        self.inY = None
+        self.mX = None
+        self.mY = None
         self.piece = None
         self.pieces = pieces
 
+    def inputPiece(self):
+        pieceInvalid = True
+        while(pieceInvalid):
+            print 'Input piece'
+            self.inX = raw_input("Select piece x: ")
+            self.inY = raw_input("Select piece y: ")
+            self.inX = int(self.inX)
+            self.inY = int(self.inY)
+            pieceInvalid = self.checkPiece()
+
     def inputMove(self):
         print 'Move to?'
-        self.inputX = raw_input("Select x: ")
-        self.inputY = raw_input("Select y: ")
+        self.mX = raw_input("Select x: ")
+        self.mY = raw_input("Select y: ")
+        self.mX = int(self.mX)
+        self.mY = int(self.mY)
 
     def checkPiece(self):
         for piece in self.pieces:
-            if piece.x == x and piece.y == y:
+            if piece.x == self.inX and piece.y == self.inY:
                 self.piece = piece
                 return False
     
         print 'Not valid please enter another piece.'
         return True
 
-    def getMove(self):
-        moveCheck = True
-        while(moveCheck):
-            self.inputMove()
-            moveCheck = self.checkPiece()
-        
-#get where user wants it moved to
-#check validity
+    def getMove(self):            
+        #this is for player piece selection
+        #todo: need a way to undo a piece selection
+        self.inputPiece()
+        self.inputMove()
+
+    def setMove(self, inX, inY, mX, mY):
+        self.inX = int(inX)
+        self.inY = int(inY)
+        if self.checkPiece() != True:
+            print 'computer failed'
+            
+        self.mX = int(mX)
+        self.mY = int(mY)
+    
+#todo:        
 #log
 #do I want this to be destroyed after its completed?

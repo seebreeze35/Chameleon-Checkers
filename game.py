@@ -3,6 +3,7 @@
 import argparse
 from board import board
 from opponent import opponent
+from move import move
 
 def turns(turn):
     if turn == 'Red':
@@ -14,47 +15,20 @@ def turns(turn):
     print 'It is '+turn+'\'s turn.'
     return turn, pieces
 
-def inputPiece(pieces):
-    pieceInvalid = True
-    while(pieceInvalid):
-        print 'Input piece'
-        x = raw_input("Select piece x: ")
-        y = raw_input("Select piece y: ")
-        pieceInvalid, piece = checkPiece(pieces, int(x), int(y))
-    return piece
-
-def inputMove():
-    print 'Move to?'
-    x = raw_input("Select x: ")
-    y = raw_input("Select y: ")
-    return x, y
-
-def checkPiece(pieces, x, y):
-    for piece in pieces:
-        if piece.x == x and piece.y == y:
-            return False, piece
-    
-    print 'Not valid please enter another piece.'
-    return True, None
-
 def playerMove(pieces):
-    piece = inputPiece(pieces)
-    moveInvalid = True
-    while(moveInvalid):
-        mx, my = inputMove()
-        if mx == '' or my == '':
-            piece = inputPiece(pieces)
-            mx, my = inputMove()
-        moveInvalid = gameboard.checkMove(piece, int(mx), int(my))
-    gameboard.updatePiece(piece, int(mx), int(my))
+    _move = move(pieces)
+    _move.getMove()
+    moveInvalid = gameboard.checkMove(_move)
+    gameboard.updatePiece(_move)
 
 def computerMove(pieces):
     m = comp.move()
-    pieceInvalid, piece = checkPiece(pieces, int(m[0]), int(m[1]))    
-    moveInvalid = True
-    while(moveInvalid):
-        moveInvalid = gameboard.checkMove(piece, int(m[2]), int(m[3]))
-    gameboard.updatePiece(piece, int(m[2]), int(m[3]))
+    _move = move(pieces)
+    _move.setMove(m[0], m[1], m[2], m[3])
+#    pieceInvalid, piece = checkPiece(pieces, int(m[0]), int(m[1]))    
+    #if moveInvalid = gameboard.checkMove(piece, int(m[2]), int(m[3]))
+    moveInvalid = gameboard.checkMove(_move)
+    gameboard.updatePiece(_move)
 
 def playerGame():
     gameboard.printBoard()

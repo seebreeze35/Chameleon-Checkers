@@ -3,10 +3,6 @@
 from piece import piece
 from space import space
 
-#todo:  add rules based on piece type
-#       check for valid moves
-
-
 class board:
     
     def __init__(self, color):
@@ -82,19 +78,19 @@ class board:
                     to_return = space
         return to_return
 
-    def getSpaceBetween(self, piece, x, y):
+    def getSpaceBetween(self, _move):
         to_return = None
 
-        if x > piece.x:
-            if y > piece.y:
-                to_return = self.getSpace(x-1, y-1)
-            elif y < piece.y:
-                to_return = self.getSpace(x-1, y+1)
-        elif x < piece.x:
-            if y > piece.y:
-                to_return = self.getSpace(x+1, y-1)
-            elif y < piece.y:
-                to_return = self.getSpace(x+1, y+1)
+        if _move.mX > _move.piece.x:
+            if _move.mY > _move.piece.y:
+                to_return = self.getSpace(_move.mX-1, _move.mY-1)
+            elif _move.inY < _move.piece.y:
+                to_return = self.getSpace(_move.mY-1, _move.mY+1)
+        elif _move.mX < _move.piece.x:
+            if _move.mY > _move.piece.y:
+                to_return = self.getSpace(_move.mX+1, _move.mY-1)
+            elif _move.mY < _move.piece.y:
+                to_return = self.getSpace(_move.mX+1, _move.mY+1)
         return to_return
 
     def removePiece(self, piece):
@@ -106,10 +102,10 @@ class board:
             except:
                 print 'Fatal error removing piece'
 
-    def checkCapture(self, piece, mx, my):
-        spaceBetween = self.getSpaceBetween(piece, mx, my)
+    def checkCapture(self, _move):
+        spaceBetween = self.getSpaceBetween(_move)
         
-        if spaceBetween.piece == None or spaceBetween.piece.color == piece.color:
+        if spaceBetween.piece == None or spaceBetween.piece.color == _move.piece.color:
             print 'Not a valid move!'
             return True
         else:
@@ -118,55 +114,55 @@ class board:
             spaceBetween.piece = None
             return False
     
-    def checkForward(self, piece, my):
+    def checkForward(self, _move):
 
-        def forward(piece, my):
-            if my > piece.y:
+        def forward(m):
+            if m.mY > m.piece.y:
                 return False
             else:
                 print 'Not a valid move!'
                 return True
-        def backward(piece, my):
-            if my < piece.y:
+        def backward(m):
+            if m.mY < m.piece.y:
                 return False
             else:
                 print 'Not a valid move!'
                 return True
 
-        if piece.color == 'Red':
+        if _move.piece.color == 'Red':
             if self.redDirection == 'Up':
-                return forward(piece, my)
+                return forward(_move)
             else:
-                return backward(piece, my)
-        elif piece.color == 'Black':
+                return backward(_move)
+        elif _move.piece.color == 'Black':
             if self.blackDirection == 'Up':
-                return forward(piece, my)
+                return forward(_move)
             else:
-                return backward(piece, my)
+                return backward(_move)
 
     #Todo this is big probably need to refactor this down to be easier to read
-    def checkMove(self, piece, mx, my):
+    def checkMove(self, _move):
         #True is bad 
         #False is good
         to_return = None
-        space = self.getSpace(mx, my)
+        space = self.getSpace(_move.mX, _move.mY)
         if space.piece == None:
             if space.color != 'Black':
                 print 'Space not black!'
                 to_return = True
             #check change in column
-            elif mx == piece.x:
+            elif _move.mX == _move.piece.x:
                 print 'Not a valid move!'
                 to_return = True
             #check if a valid capture move
-            elif abs(mx-piece.x)%2 == 0:
-                to_return = self.checkCapture(piece, mx, my)
-            elif abs(mx-piece.x)>1:
-                if abs(mx-piece.x)%2==1:
+            elif abs(_move.mX-_move.piece.x)%2 == 0:
+                to_return = self.checkCapture(_move)
+            elif abs(_move.mX-_move.piece.x)>1:
+                if abs(_move.mX-_move.piece.x)%2==1:
                     print 'Not a valid move!'
                     to_return = True
-            elif piece.Type != 'King':
-                to_return = self.checkForward(piece, my)
+            elif _move.piece.Type != 'King':
+                to_return = self.checkForward(_move)
             else:
                 to_return = False
         else:
@@ -174,20 +170,20 @@ class board:
             to_return = True
 
         if to_return == False:
-            if my == 7 or my == 0:
-                piece.King()
+            if _move.mY == 7 or _move.mY == 0:
+                _move.piece.King()
 
         return to_return
 
-    def updatePiece(self, piece, mx, my):
+    def updatePiece(self, _move):
         #this probably needs to be redone
-        x,y = piece.getPos()
-        space = self.getSpace(x, y)
+        #x,y = piece.getPos()
+        space = self.getSpace(_move.inX, _move.inY)
         space.piece = None
-        piece.move(mx, my)
-        x,y = piece.getPos()
-        space = self.getSpace(x,y)
-        space.setPiece(piece)
+        _move.piece.move(_move.mX, _move.mY)
+#        x,y = piece.getPos()
+        space = self.getSpace(_move.mX, _move.mY)
+        space.setPiece(_move.piece)
         
 
     def updateBoard(self):

@@ -22,6 +22,7 @@ def playerMove(pieces):
     gameboard.updatePiece(_move)
 
 def computerMove(pieces):
+    validPieces = gameboard.getMovablePieces(comp.color)
     m = comp.move()
     _move = move(pieces)
     _move.setMove(m[0], m[1], m[2], m[3])
@@ -63,6 +64,8 @@ args = vars(parser.parse_args())
 
 gameboard = board(args['color'])
 
-comp = opponent()
-
+if args['color']=='Red':
+    comp = opponent('Black')
+elif args['color']=='Black':
+    comp = opponent('Red')
 playerGame()

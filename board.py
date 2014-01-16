@@ -20,6 +20,10 @@ class board:
         self.createPieces()
         self.setPieces()
 
+
+    def reset(self):
+        self.setup()
+
     def createSpaces(self):
         for x in range(8):
             List = []
@@ -65,9 +69,6 @@ class board:
                 elif row > 4:
                     redIter = fillRow(row, redIter, 'Red')
                     self.redDirection = 'Up'
-
-    def reset(self):
-        self.setup()
 
     def getSpace(self, x, y):
         #input assumes type is int
@@ -175,13 +176,96 @@ class board:
 
         return to_return
 
+    def getMovablePieces(self, color):
+        to_return = []
+
+        def checkReg(space):
+            if space.piece == None:
+                return True
+
+        #TODO: fix this to check for correct capture moves
+        def checkCapture(space, color, x, y):
+            between = self.getSpace(x, y)
+            if between.piece:
+                if between.piece.color == color:
+                    return False
+                else:
+                    return True
+            return False
+
+        def checkMove(piece, direction, deltaY):
+            to_return = False
+            if direction == 'Up':
+                x = piece.x+1
+                if x <= 7:
+                    space = self.getSpace(piece.x+1,piece.y+deltaY)
+                    if checkReg(space):
+                        to_return = True
+                    if deltaY == 2:
+                        if checkCapture(space, piece.color, piece.x+1, piece.y+1):
+                            to_return = True
+                x = piece.x-1
+                if x >= 0:
+                    space = self.getSpace(piece.x-1,piece.y+deltaY)
+                    if checkReg(space):
+                        to_return = True
+                    if deltaY == 2:
+                        if checkCapture(space, piece.color, piece.x-1, piece.y+1):
+                            to_return = True
+            if direction == 'Down':
+                x = piece.x+1
+                if x <= 7:
+                    space = self.getSpace(piece.x+1,piece.y-deltaY)
+                    if checkReg(space):
+                        to_return = True
+                    if deltaY == 2:
+                        if checkCapture(space, piece.color, piece.x+1, piece.y-1):
+                            to_return = True
+                x = piece.x-1
+                if x >= 0:
+                    space = self.getSpace(piece.x-1,piece.y-deltaY)
+                    if checkReg(space):
+                        to_return = True
+                    if deltaY == 2:
+                        if checkCapture(space, piece.color, piece.x-1, piece.y-1):
+                            to_return = True
+            return to_return
+
+        def getMoves(piece, direction):
+            to_return = False
+            if piece.Type != 'King':
+                if checkMove(piece, direction, 1):
+                    to_return = True
+                #checks for a valid capture move
+                if checkMove(piece, direction, 2):
+                    to_return = True
+            elif piece.Type == 'King':
+                if checkMove(piece, 'Up', 1) or checkMove(piece, 'Down', 1):
+                    to_return = True
+                #checks for a valid capture move
+                if checkMove(piece, 'Up', 2) or checkMove(piece, 'Down', 2):
+                    to_return = True                    
+            return to_return
+
+        if color == 'Red':
+            for piece in self.Red:
+                if getMoves(piece, self.redDirection):
+                    to_return.append(piece)
+        else:
+            for piece in self.Black:
+                if getMoves(piece, self.blackDirection):
+                    to_return.append(piece)
+        
+        for p in to_return:
+            print str(p.x)+' '+str(p.y)
+
+        return to_return
+
     def updatePiece(self, _move):
         #this probably needs to be redone
-        #x,y = piece.getPos()
         space = self.getSpace(_move.inX, _move.inY)
         space.piece = None
         _move.piece.move(_move.mX, _move.mY)
-#        x,y = piece.getPos()
         space = self.getSpace(_move.mX, _move.mY)
         space.setPiece(_move.piece)
         

@@ -3,8 +3,9 @@
 
 
 class opponent:
-    def __init__(self):
+    def __init__(self, color):
         self.id = 0
+        self.color = color
         self.moves = [(1,5,2,4),(2,4,0,2),(3,5,2,4)]
 
     def move(self):
@@ -13,5 +14,4 @@ class opponent:
         return self.moves.pop()
     
 
-    
     

@@ -10,6 +10,7 @@ class move:
         self.pieces = pieces
 
     def inputPiece(self):
+        #add error handling to prevent crash from not having a x or y value
         pieceInvalid = True
         while(pieceInvalid):
             print 'Input piece'
@@ -44,7 +45,7 @@ class move:
     def setMove(self, inX, inY, mX, mY):
         self.inX = int(inX)
         self.inY = int(inY)
-        if self.checkPiece() != True:
+        if self.checkPiece() != False:
             print 'computer failed'
             
         self.mX = int(mX)

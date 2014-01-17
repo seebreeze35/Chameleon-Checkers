@@ -23,7 +23,7 @@ def playerMove(pieces):
 
 def computerMove(pieces):
     validPieces = gameboard.getMovablePieces(comp.color)
-    m = comp.move()
+    m = comp.move(validPieces)
     _move = move(pieces)
     _move.setMove(m[0], m[1], m[2], m[3])
 #    pieceInvalid, piece = checkPiece(pieces, int(m[0]), int(m[1]))    

@@ -183,52 +183,40 @@ class board:
             if space.piece == None:
                 return True
 
-        #TODO: fix this to check for correct capture moves
         def checkCapture(space, color, x, y):
             between = self.getSpace(x, y)
             if between.piece:
                 if between.piece.color == color:
                     return False
-                else:
+                elif between.piece.color != color:
                     return True
             return False
+
+        def performCheck(x, y, Y, deltaY):
+            to_return = False
+            space = self.getSpace(x, y)
+            if deltaY == 1:
+                if checkReg(space):
+                    to_return = True
+            if deltaY == 2:
+                if checkCapture(space, piece.color, x, Y):
+                    to_return = True
+            return to_return
 
         def checkMove(piece, direction, deltaY):
             to_return = False
             if direction == 'Up':
-                x = piece.x+1
-                if x <= 7:
-                    space = self.getSpace(piece.x+1,piece.y+deltaY)
-                    if checkReg(space):
-                        to_return = True
-                    if deltaY == 2:
-                        if checkCapture(space, piece.color, piece.x+1, piece.y+1):
-                            to_return = True
-                x = piece.x-1
-                if x >= 0:
-                    space = self.getSpace(piece.x-1,piece.y+deltaY)
-                    if checkReg(space):
-                        to_return = True
-                    if deltaY == 2:
-                        if checkCapture(space, piece.color, piece.x-1, piece.y+1):
-                            to_return = True
-            if direction == 'Down':
-                x = piece.x+1
-                if x <= 7:
-                    space = self.getSpace(piece.x+1,piece.y-deltaY)
-                    if checkReg(space):
-                        to_return = True
-                    if deltaY == 2:
-                        if checkCapture(space, piece.color, piece.x+1, piece.y-1):
-                            to_return = True
-                x = piece.x-1
-                if x >= 0:
-                    space = self.getSpace(piece.x-1,piece.y-deltaY)
-                    if checkReg(space):
-                        to_return = True
-                    if deltaY == 2:
-                        if checkCapture(space, piece.color, piece.x-1, piece.y-1):
-                            to_return = True
+                y = piece.y+deltaY
+                Y = piece.y+1
+            elif direction == 'Down':
+                y = piece.y-deltaY
+                Y = piece.y-1
+            x = piece.x+1
+            if x <= 7:
+                to_return = performCheck(x, y, Y, deltaY)
+            x = piece.x-1
+            if x >= 0:
+                to_return = performCheck(x, y, Y, deltaY)
             return to_return
 
         def getMoves(piece, direction):
@@ -256,9 +244,6 @@ class board:
                 if getMoves(piece, self.blackDirection):
                     to_return.append(piece)
         
-        for p in to_return:
-            print str(p.x)+' '+str(p.y)
-
         return to_return
 
     def updatePiece(self, _move):

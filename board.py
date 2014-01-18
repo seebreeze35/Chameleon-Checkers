@@ -70,6 +70,14 @@ class board:
                     redIter = fillRow(row, redIter, 'Red')
                     self.redDirection = 'Up'
 
+    def getPiece(self, pieces, _move):
+        to_return = None
+        
+        for piece in pieces:
+            if piece.x == _move.inX and piece.y == _move.inY:
+                to_return = piece
+        return to_return
+
     def getSpace(self, x, y):
         #input assumes type is int
         to_return = None

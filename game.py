@@ -16,7 +16,8 @@ def turns(turn):
     return turn, pieces
 
 def playerMove(pieces):
-    _move = move(pieces)
+    _move = move()
+    _move.pieces = pieces
     _move.getMove()
     moveInvalid = gameboard.checkMove(_move)
     gameboard.updatePiece(_move)
@@ -24,12 +25,16 @@ def playerMove(pieces):
 def computerMove(pieces):
     validPieces = gameboard.getMovablePieces(comp.color)
     m = comp.move(validPieces)
-    _move = move(pieces)
-    _move.setMove(m[0], m[1], m[2], m[3])
+    m.pieces = pieces
+    m.piece = gameboard.getPiece(pieces, m)
+
+#    _move.setMove(m[0], m[1], m[2], m[3])
 #    pieceInvalid, piece = checkPiece(pieces, int(m[0]), int(m[1]))    
     #if moveInvalid = gameboard.checkMove(piece, int(m[2]), int(m[3]))
-    moveInvalid = gameboard.checkMove(_move)
-    gameboard.updatePiece(_move)
+    if gameboard.checkMove(m) != True:
+        gameboard.updatePiece(m)
+    else:
+        print 'not a valid move'
 
 def playerGame():
     gameboard.printBoard()

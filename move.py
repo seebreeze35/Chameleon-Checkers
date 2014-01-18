@@ -1,13 +1,19 @@
 #! /usr/bin/python
 
 class move:
-    def __init__(self, pieces):
+    def __init__(self):
         self.inX = None
         self.inY = None
         self.mX = None
         self.mY = None
         self.piece = None
-        self.pieces = pieces
+        self.pieces = None
+
+    @classmethod
+    def altInit(self, x, y):
+        self.inX = x
+        self.inY = y
+        self.inputMove()
 
     def inputPiece(self):
         #add error handling to prevent crash from not having a x or y value

@@ -82,16 +82,18 @@ class board:
     def getSpaceBetween(self, _move):
         to_return = None
 
-        if _move.mX > _move.piece.x:
+        def check(_move, x):
+            to_return = None
             if _move.mY > _move.piece.y:
-                to_return = self.getSpace(_move.mX-1, _move.mY-1)
-            elif _move.inY < _move.piece.y:
-                to_return = self.getSpace(_move.mY-1, _move.mY+1)
-        elif _move.mX < _move.piece.x:
-            if _move.mY > _move.piece.y:
-                to_return = self.getSpace(_move.mX+1, _move.mY-1)
+                to_return = self.getSpace(x, _move.mY-1)
             elif _move.mY < _move.piece.y:
-                to_return = self.getSpace(_move.mX+1, _move.mY+1)
+                to_return = self.getSpace(x, _move.mY+1)
+            return to_return
+
+        if _move.mX > _move.piece.x:
+            to_return = check(_move, _move.mX-1)
+        elif _move.mX < _move.piece.x:
+            to_return = check(_move, _move.mX+1)
         return to_return
 
     def removePiece(self, piece):
@@ -247,7 +249,6 @@ class board:
         return to_return
 
     def updatePiece(self, _move):
-        #this probably needs to be redone
         space = self.getSpace(_move.inX, _move.inY)
         space.piece = None
         _move.piece.move(_move.mX, _move.mY)

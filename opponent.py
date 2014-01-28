@@ -6,6 +6,9 @@ class opponent:
     def __init__(self, color):
         self.id = 0
         self.color = color
+        self.program = ai.makerandomtree(2)#ai.exampletree()
+        print self.program.display()
+
 
     def move(self, validMoves):
         m = validMoves[-1]

@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-from random import random. randint, choice
+from random import random, randint, choice
 from copy import deepcopy
 from math import log
 
@@ -34,9 +34,9 @@ class constnode:
     def evaluate(self, inp):
         return self.v
 
-addw = fwrapper(lambda 1:1[0]+1[1],2,'add')
-addw = fwrapper(lambda 1:1[0]-1[1],2,'subtract')
-addw = fwrapper(lambda 1:1[0]*1[1],2,'multiply')
+addw = fwrapper(lambda l:l[0]+l[1],2,'add')
+subw = fwrapper(lambda l:l[0]-l[1],2,'subtract')
+mulw = fwrapper(lambda l:l[0]*l[1],2,'multiply')
 
 def iffunc(l):
     if l[0]>0: return 1

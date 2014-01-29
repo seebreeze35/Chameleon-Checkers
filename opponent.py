@@ -15,14 +15,14 @@ class opponent:
     #create the move from the moce program
 
     def move(self, validMoves):
-        moveMax = 0
+        moveMax = None
         m = None
 
         for valid in validMoves:
            # print str(valid.x)  +' '+str(valid.y)
             num = self.program.evaluate([valid.x, valid.y])
            # print num
-            if num >moveMax:
+            if num >moveMax or moveMax == None:
                 moveMax = num
                 m = valid
 

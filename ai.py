@@ -10,6 +10,7 @@ class fwrapper:
         self.childcount = childcount
         self.name = name
 
+
 class node:
     def __init__(self, fw, children):
         self.function = fw.function
@@ -50,7 +51,7 @@ subw = fwrapper(lambda l:l[0]-l[1],2,'subtract')
 mulw = fwrapper(lambda l:l[0]*l[1],2,'multiply')
 
 def iffunc(l):
-    if l[0]>0: return 1[1]
+    if l[0]>0: return l[1]
     else: return l[2]
 ifw = fwrapper(iffunc,3,'if')
 
@@ -72,7 +73,7 @@ def makerandomtree(pc, maxdepth=4, fpr=0.5, ppr=0.6):
     if random()<fpr and maxdepth>0:
         f=choice(flist)
         children = [makerandomtree(pc, maxdepth-1, fpr, ppr)
-                    for i in range(f.childcound)]
+                    for i in range(f.childcount)]
         return node(f, children)
     elif random()<ppr:
         return paramnode(randint(0,pc-1))

@@ -12,7 +12,12 @@ class opponent:
 
     def move(self, validMoves):
         m = validMoves[-1]
-        print str(m.x)+' '+str(m.y)
+#        print str(m.x)+' '+str(m.y)
+
+        for valid in validMoves:
+            print str(valid.x)  +' '+str(valid.y)
+            num = self.program.evaluate([valid.x, valid.y])
+            print num
 
         _move = move()
         _move.inX = m.x

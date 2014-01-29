@@ -10,12 +10,12 @@ class fwrapper:
         self.childcount = childcount
         self.name = name
 
-
 class node:
     def __init__(self, fw, children):
         self.function = fw.function
         self.name = fw.name
         self.children = children
+        self.size = 0
 
     def evaluate(self, inp):
         results = [n.evaluate(inp) for n in self.children]
@@ -25,10 +25,16 @@ class node:
         print (' '*indent)+self.name
         for c in self.children:
             c.display(indent+1)
+        
+    def getSize(self):
+        for c in self.children:
+            self.size += c.getSize()
+        return self.size
 
 class paramnode:
     def __init__(self, idx):
         self.idx = idx
+        self.size = 1
 
     def evaluate(self, inp):
         return inp[self.idx]
@@ -36,15 +42,22 @@ class paramnode:
     def display(self, indent=0):
         print '%sp%d' % (' '*indent,self.idx)
 
+    def getSize(self):
+        return self.size
+
 class constnode:
     def __init__(self, v):
         self.v = v
+        self.size = 1
 
     def evaluate(self, inp):
         return self.v
 
     def display(self, indent=0):
         print '%s%d' % (' '*indent,self.v)
+
+    def getSize(self):
+        return self.size
 
 addw = fwrapper(lambda l:l[0]+l[1],2,'add')
 subw = fwrapper(lambda l:l[0]-l[1],2,'subtract')
@@ -62,12 +75,6 @@ gtw = fwrapper(isgreater,2,'isgreater')
 
 flist = [addw, mulw, ifw, gtw, subw]
 
-def exampletree():
-    return node(ifw, [
-                      node(gtw,[paramnode(0),constnode(3)]),
-                      node(addw,[paramnode(1),constnode(5)]),
-                      node(subw,[paramnode(1),constnode(2)]),
-                      ])
 
 def makerandomtree(pc, maxdepth=4, fpr=0.5, ppr=0.6):
     if random()<fpr and maxdepth>0:
@@ -79,3 +86,10 @@ def makerandomtree(pc, maxdepth=4, fpr=0.5, ppr=0.6):
         return paramnode(randint(0,pc-1))
     else:
         return constnode(randint(0,10))
+
+def getSize(program):
+    size = program.getSize()
+    if size == 1:
+        return False
+    else:
+        return size    

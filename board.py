@@ -193,40 +193,56 @@ class board:
             if space.piece == None:
                 return True
 
-        def checkCapture(space, color, x, y):
+        def checkCapture(space, color, x, y, X, Y):
+            to_return1 = None
+            to_return2 = None
+
             between = self.getSpace(x, y)
             if between.piece:
                 if between.piece.color == color:
-                    return False
+                    to_return1 = False
                 elif between.piece.color != color:
-                    return True
-            return False
+                    to_return1 = True
+            endSpace = self.getSpace(X,Y)
+            if endSpace:
+                if endSpace.piece:
+                    to_return2 = False
+                else:
+                    to_return2 = True
 
-        def performCheck(x, y, Y, deltaY):
+            if to_return1 == False or to_return2 == False:
+                return False
+            else:
+                return True
+
+        def performCheck(x, y, X, Y, deltaY):
             to_return = False
             space = self.getSpace(x, y)
             if deltaY == 1:
                 if checkReg(space):
                     to_return = True
             if deltaY == 2:
-                if checkCapture(space, piece.color, x, Y):
+                if checkCapture(space, piece.color, x, y, X, Y):
                     to_return = True
             return to_return
 
         def checkMove(piece, direction, deltaY):
             to_return = False
             if direction == 'Up':
-                y = piece.y+deltaY
-                Y = piece.y+1
+                y = piece.y+1
+                Y = piece.y+deltaY
+                
             elif direction == 'Down':
-                y = piece.y-deltaY
-                Y = piece.y-1
+                y = piece.y-1
+                Y = piece.y-deltaY
             x = piece.x+1
+            X = piece.x+deltaY
             if x <= 7:
-                to_return = performCheck(x, y, Y, deltaY)
+                to_return = performCheck(x, y, X, Y, deltaY)
             x = piece.x-1
+            X = piece.x-deltaY
             if x >= 0:
-                to_return = performCheck(x, y, Y, deltaY)
+                to_return = performCheck(x, y, X, Y, deltaY)
             return to_return
 
         def getMoves(piece, direction):

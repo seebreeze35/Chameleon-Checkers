@@ -24,7 +24,7 @@ def playerMove(pieces):
 
 def computerMove(pieces):
     validPieces = gameboard.getMovablePieces(comp.color)
-    m = comp.move(validPieces)
+    m = comp.move(validPieces, gameboard)
     m.pieces = pieces
     m.piece = gameboard.getPiece(pieces, m)
 

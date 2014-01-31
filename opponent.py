@@ -14,7 +14,7 @@ class opponent:
     #get a list of valid moves from the give piece
     #create the move from the moce program
 
-    def move(self, validMoves):
+    def move(self, validMoves, board):
         moveMax = None
         m = None
 
@@ -25,6 +25,8 @@ class opponent:
             if num >moveMax or moveMax == None:
                 moveMax = num
                 m = valid
+
+        validMoves = board.getPieceMoves(m)
 
         print str(m.x)+' '+str(m.y)
 

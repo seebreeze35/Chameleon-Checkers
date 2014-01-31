@@ -273,6 +273,24 @@ class board:
         
         return to_return
 
+    def getPieceMoves(self, piece):
+        x = piece.x
+        y = piece.y
+        direction = None
+
+        if piece.color == 'Red':
+            direction = self.redDirection
+        else:
+            direction = self.blackDirection
+        #check change in y
+        #check change in x
+        #check jump for both x values
+        #eventually will need to check for king moves
+        if direction == 'Down':
+            print direction
+        else:
+            print direction
+
     def updatePiece(self, _move):
         space = self.getSpace(_move.inX, _move.inY)
         space.piece = None

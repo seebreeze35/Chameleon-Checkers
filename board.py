@@ -2,6 +2,7 @@
 
 from piece import piece
 from space import space
+from move import move
 
 class board:
     
@@ -273,24 +274,71 @@ class board:
         
         return to_return
 
+
+    def _checkRanges(self, x, y):
+        to_return = True
+
+        if x > 7 or x < 0:
+            to_return = False
+        if y > 7 or y < 0:
+            to_return = False
+
+        return to_return
+
     def getPieceMoves(self, piece):
-        x = piece.x
-        y = piece.y
         direction = None
+        moveList = []
 
         if piece.color == 'Red':
             direction = self.redDirection
         else:
             direction = self.blackDirection
-        #check change in y
-        #check change in x
+
+        #check move
+        if direction == 'Down':
+            y = piece.y-1
+        else:
+            y = piece.y+1
+
+        x = piece.x+1
+        
+        if self._checkRanges(x,y):
+            print 'Check 1'
+            print str(x)+' '+str(y)
+            space = self.getSpace(x, y)
+            if space:
+                if not space.piece:
+                    _move = move()
+                    _move = _move.noInputInit(x, y, piece)
+                    moveList.append(_move)
+
+        x = piece.x-1
+        if self._checkRanges(x,y):
+            print 'Check 2'
+            print str(x)+' '+str(y)
+
+        #check capture
+        #check if theres an opposing piece in the next spot?
+        
+        if direction == 'Down':
+            y = piece.y-2
+        else:
+            y = piece.y+2
+
+        x = piece.x+2
+        if self._checkRanges(x,y):
+            print 'Check 3'
+            print str(x)+' '+str(y)
+
+        x = piece.x-2
+        if self._checkRanges(x,y):
+            print 'Check 4'
+            print str(x)+' '+str(y)
         #check jump for both x values
         #eventually will need to check for king moves
-        if direction == 'Down':
-            print direction
-        else:
-            print direction
 
+        print '--'
+        
     def updatePiece(self, _move):
         space = self.getSpace(_move.inX, _move.inY)
         space.piece = None

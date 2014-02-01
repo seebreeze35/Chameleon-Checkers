@@ -15,6 +15,13 @@ class move:
         self.inY = y
         self.inputMove()
 
+    def noInputInit(self, x, y, piece):
+        self.mX = x
+        self.mY = y
+        self.piece = piece
+        self.inX = piece.x
+        self.inY = piece.y
+
     def inputPiece(self):
         #add error handling to prevent crash from not having a x or y value
         pieceInvalid = True

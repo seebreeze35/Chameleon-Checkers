@@ -28,7 +28,10 @@ class opponent:
 
         validMoves = board.getPieceMoves(m)
 
-        print str(m.x)+' '+str(m.y)
+        for valid in validMoves:
+            print str(valid.mX)+' '+str(valid.mY)
+
+        print 'Piece: '+str(m.x)+' '+str(m.y)
 
         _move = move()
         _move.inX = m.x

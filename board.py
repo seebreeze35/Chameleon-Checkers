@@ -309,14 +309,19 @@ class board:
             if space:
                 if not space.piece:
                     _move = move()
-                    _move = _move.noInputInit(x, y, piece)
+                    _move.noInputInit(x, y, piece)
                     moveList.append(_move)
 
         x = piece.x-1
         if self._checkRanges(x,y):
             print 'Check 2'
             print str(x)+' '+str(y)
-
+            space = self.getSpace(x, y)
+            if space:
+                if not space.piece:
+                    _move = move()
+                    _move.noInputInit(x, y, piece)
+                    moveList.append(_move)
         #check capture
         #check if theres an opposing piece in the next spot?
         
@@ -337,7 +342,7 @@ class board:
         #check jump for both x values
         #eventually will need to check for king moves
 
-        print '--'
+        return moveList
         
     def updatePiece(self, _move):
         space = self.getSpace(_move.inX, _move.inY)

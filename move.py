@@ -9,6 +9,7 @@ class move:
         self.piece = None
         self.pieces = None
 
+    #depricated
     @classmethod
     def altInit(self, x, y):
         self.inX = x

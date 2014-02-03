@@ -303,8 +303,6 @@ class board:
         x = piece.x+1
         
         if self._checkRanges(x,y):
-            print 'Check 1'
-            print str(x)+' '+str(y)
             space = self.getSpace(x, y)
             if space:
                 if not space.piece:
@@ -314,8 +312,6 @@ class board:
 
         x = piece.x-1
         if self._checkRanges(x,y):
-            print 'Check 2'
-            print str(x)+' '+str(y)
             space = self.getSpace(x, y)
             if space:
                 if not space.piece:
@@ -324,23 +320,38 @@ class board:
                     moveList.append(_move)
         #check capture
         #check if theres an opposing piece in the next spot?
-        
         if direction == 'Down':
-            y = piece.y-2
+            Y = piece.y-2
+            y = Y+1
         else:
-            y = piece.y+2
+            Y = piece.y+2
+            y = y-1
 
-        x = piece.x+2
-        if self._checkRanges(x,y):
-            print 'Check 3'
-            print str(x)+' '+str(y)
+        X = piece.x+2
+        x = X-1
+        if self._checkRanges(x,y) and self._checkRanges(X,Y):
+            jumpSpace = self.getSpace(X, Y)
+            spaceBetween = self.getSpace(x,y)
+            if jumpSpace:
+                if spaceBetween.piece:
+                    if not jumpSpace.piece and spaceBetween.piece.color != piece.color:
+                        _move = move()
+                        _move.noInputInit(X, Y, piece)
+                        moveList.append(_move)
 
-        x = piece.x-2
-        if self._checkRanges(x,y):
-            print 'Check 4'
-            print str(x)+' '+str(y)
-        #check jump for both x values
-        #eventually will need to check for king moves
+        X = piece.x-2
+        x = X+1
+        if self._checkRanges(x,y) and self._checkRanges(X,Y):
+            jumpSpace = self.getSpace(X, Y)
+            spaceBetween = self.getSpace(x,y)
+            if jumpSpace:
+                if spaceBetween.piece:
+                    if not jumpSpace.piece and spaceBetween.piece.color != piece.color:
+                        _move = move()
+                        _move.noInputInit(X, Y, piece)
+                        moveList.append(_move)
+
+        #need to check for king moves
 
         return moveList
         

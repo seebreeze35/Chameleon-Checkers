@@ -28,6 +28,7 @@ class opponent:
 
         validMoves = board.getPieceMoves(m)
 
+        print 'moves--'
         for valid in validMoves:
             print str(valid.mX)+' '+str(valid.mY)
 

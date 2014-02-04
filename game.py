@@ -23,8 +23,21 @@ def playerMove(pieces):
     gameboard.updatePiece(_move)
 
 def computerMove(pieces):
-    validPieces = gameboard.getMovablePieces(comp.color)
-    m = comp.move(validPieces, gameboard)
+    #validPieces = gameboard.getMovablePieces(comp.color)
+    moveList = []
+
+    for piece in pieces:
+        moves = gameboard.getPieceMoves(piece)
+        if moves:
+            moveList.append((piece, moves))
+
+#    print '-----'
+ #   for m in moveList:
+  #      for M in m[1]:
+   #         print str(M.mX)+' '+str(M.mY)
+   #x print '-----'
+            
+    m = comp.move(moveList)
     m.pieces = pieces
     m.piece = gameboard.getPiece(pieces, m)
 

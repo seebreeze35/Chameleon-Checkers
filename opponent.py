@@ -10,48 +10,35 @@ class opponent:
         self.moveProgram = None
         self.genPieceProgram()
         self.genMoveProgram()
-#        print self.pieceProgram.display()
-        print self.moveProgram.display()
 
     #need to generate a move program
     #get a list of valid moves from the give piece
     #create the move from the moce program
 
-    def move(self, validPieces, board):
+    def move(self, validPieces):
         pieceMax, moveMax = None, None
+        pieceIndex = None
         p, m = None, None
 
         for valid in validPieces:
-           # print str(valid.x)  +' '+str(valid.y)
-            num = self.pieceProgram.evaluate([valid.x, valid.y])
+            #print str(valid[0].x)  +' '+str(valid[0].y) 
+            num = self.pieceProgram.evaluate([valid[0].x, valid[0].y])
             if num >pieceMax or pieceMax == None:
                 pieceMax = num
-                p = valid
+                p = valid[0]
+                pieceIndex = valid
 
-        validMoves = board.getPieceMoves(p)
-
-#        print 'moves'
- #       for valid in validMoves:
-  #          print str(valid.mX)+' '+str(valid.mY)
-
-        for valid in validMoves:
-           # print str(valid.x)  +' '+str(valid.y)
+        for valid in pieceIndex[1]:
+            print str(valid.mX)  +' '+str(valid.mY)
             num = self.moveProgram.evaluate([valid.mX, valid.mY])
             if num >moveMax or moveMax == None:
                 moveMax = num
                 m = valid
 
-        print 'moves--'
-        for valid in validMoves:
-            print str(valid.mX)+' '+str(valid.mY)
-
         print 'Piece: '+str(p.x)+' '+str(p.y)
         print 'Move: '+str(m.mX)+' '+str(m.mY)
 
-#        _move = move()
- #       _move.inX = m.x
-  #      _move.inY = m.y
-   #     _move.inputMove()
+       # _move.inputMove()
         return m
 
     def genPieceProgram(self):

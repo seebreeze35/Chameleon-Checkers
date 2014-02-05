@@ -187,6 +187,35 @@ class board:
 
         return to_return
 
+
+    def _checkjump(self, x, X, y, Y, piece):
+        to_return = None
+        if self._checkRanges(x,y) and self._checkRanges(X,Y):
+            jumpSpace = self.getSpace(X, Y)
+            spaceBetween = self.getSpace(x,y)
+            if jumpSpace:
+                if spaceBetween.piece:
+                    if not jumpSpace.piece and spaceBetween.piece.color != piece.color:
+                        _move = move()
+                        _move.noInputInit(X, Y, piece)
+                        to_return = _move
+        return to_return
+
+
+    def _checkmove(self, x, y, piece):
+        to_return = None
+
+        if self._checkRanges(x,y):
+            space = self.getSpace(x, y)
+            if space:
+                if not space.piece:
+                    _move = move()
+                    _move.noInputInit(x, y, piece)
+                    to_return = _move
+
+        return to_return
+
+
     def _checkRanges(self, x, y):
         to_return = True
 
@@ -213,23 +242,16 @@ class board:
             y = piece.y+1
 
         x = piece.x+1
-        
-        if self._checkRanges(x,y):
-            space = self.getSpace(x, y)
-            if space:
-                if not space.piece:
-                    _move = move()
-                    _move.noInputInit(x, y, piece)
-                    moveList.append(_move)
+
+        m = self._checkmove(x,y,piece)
+        if m:
+            moveList.append(m)
 
         x = piece.x-1
-        if self._checkRanges(x,y):
-            space = self.getSpace(x, y)
-            if space:
-                if not space.piece:
-                    _move = move()
-                    _move.noInputInit(x, y, piece)
-                    moveList.append(_move)
+        m = self._checkmove(x,y,piece)
+        if m:
+            moveList.append(m)
+
         #check capture
         #check if theres an opposing piece in the next spot?
         if direction == 'Down':
@@ -241,27 +263,16 @@ class board:
 
         X = piece.x+2
         x = X-1
-        if self._checkRanges(x,y) and self._checkRanges(X,Y):
-            jumpSpace = self.getSpace(X, Y)
-            spaceBetween = self.getSpace(x,y)
-            if jumpSpace:
-                if spaceBetween.piece:
-                    if not jumpSpace.piece and spaceBetween.piece.color != piece.color:
-                        _move = move()
-                        _move.noInputInit(X, Y, piece)
-                        moveList.append(_move)
+        
+        m = self._checkjump(x, X, y, Y, piece)
+        if m:
+            moveList.append(m)
 
         X = piece.x-2
         x = X+1
-        if self._checkRanges(x,y) and self._checkRanges(X,Y):
-            jumpSpace = self.getSpace(X, Y)
-            spaceBetween = self.getSpace(x,y)
-            if jumpSpace:
-                if spaceBetween.piece:
-                    if not jumpSpace.piece and spaceBetween.piece.color != piece.color:
-                        _move = move()
-                        _move.noInputInit(X, Y, piece)
-                        moveList.append(_move)
+        m = self._checkjump(x, X, y, Y, piece)
+        if m:
+            moveList.append(m)
 
         #need to check for king moves
 

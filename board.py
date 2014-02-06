@@ -225,57 +225,85 @@ class board:
             to_return = False
 
         return to_return
-
-    def getPieceMoves(self, piece):
-        direction = None
-        moveList = []
-
-        if piece.color == 'Red':
-            direction = self.redDirection
-        else:
-            direction = self.blackDirection
-
-        #check move
+        
+    def _directionMoveCheck(self, piece, direction):
         if direction == 'Down':
             y = piece.y-1
         else:
             y = piece.y+1
 
         x = piece.x+1
-
-        m = self._checkmove(x,y,piece)
-        if m:
-            moveList.append(m)
+        m1 = self._checkmove(x,y,piece)
 
         x = piece.x-1
-        m = self._checkmove(x,y,piece)
-        if m:
-            moveList.append(m)
+        m2 = self._checkmove(x,y,piece)
 
-        #check capture
-        #check if theres an opposing piece in the next spot?
+        return m1, m2
+
+    def _directionJumpCheck(self, piece, direction):
         if direction == 'Down':
             Y = piece.y-2
             y = Y+1
         else:
             Y = piece.y+2
-            y = y-1
+            y = Y-1
 
         X = piece.x+2
         x = X-1
         
-        m = self._checkjump(x, X, y, Y, piece)
-        if m:
-            moveList.append(m)
+        m1 = self._checkjump(x, X, y, Y, piece)
 
         X = piece.x-2
         x = X+1
-        m = self._checkjump(x, X, y, Y, piece)
-        if m:
-            moveList.append(m)
+        m2 = self._checkjump(x, X, y, Y, piece)
 
-        #need to check for king moves
+        return m1, m2
+        
 
+    def _checkDirection(self, piece, direction):
+        moveList = []
+        #check move
+        m1, m2, = self._directionMoveCheck(piece, direction)
+        if m1:
+            moveList.append(m1)
+        if m2:
+            moveList.append(m2)
+
+        #check capture
+        #check if theres an opposing piece in the next spot?
+        m1, m2 = self._directionJumpCheck(piece, direction)
+        if m1:
+            moveList.append(m1)
+        if m2:
+            moveList.append(m2)
+        return moveList
+
+    def getPieceMoves(self, piece):
+        direction = None
+        moveList = []
+
+        if piece.Type == 'Regular':
+            if piece.color == 'Red':
+                direction = self.redDirection
+            else:
+                direction = self.blackDirection
+            
+            moveList = self._checkDirection(piece, direction)
+
+        else:
+            #king check
+            #check move Up
+            temp = self._checkDirection(piece, 'Up')
+            if temp:
+                moveList.append(temp)
+            #check move Down
+            temp = self._checkDirection(piece, 'Down')
+            if temp:
+                moveList.append(temp)
+
+        if piece.Type == 'King':
+            for m in moveList:
+                print m
         return moveList
         
     def updatePiece(self, _move):

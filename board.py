@@ -125,18 +125,25 @@ class board:
             self.removePiece(spaceBetween.piece)
             spaceBetween.piece = None
             return False
+
+    def checkMoveRange(self, _move):
+        if abs(_move.mY - _move.piece.y) == 1:
+            return False
+        else:
+            print 'Not a valid move!'
+            return True
     
     def checkForward(self, _move):
 
         def forward(m):
             if m.mY > m.piece.y:
-                return False
+                self.checkMoveRange(_move)
             else:
                 print 'Not a valid move!'
                 return True
         def backward(m):
             if m.mY < m.piece.y:
-                return False
+                self.checkMoveRange(_move)
             else:
                 print 'Not a valid move!'
                 return True
@@ -295,15 +302,14 @@ class board:
             #check move Up
             temp = self._checkDirection(piece, 'Up')
             if temp:
-                moveList.append(temp)
+                for m in temp:
+                    moveList.append(m)
             #check move Down
             temp = self._checkDirection(piece, 'Down')
             if temp:
-                moveList.append(temp)
+                for m in temp:
+                    moveList.append(m)
 
-        if piece.Type == 'King':
-            for m in moveList:
-                print m
         return moveList
         
     def updatePiece(self, _move):

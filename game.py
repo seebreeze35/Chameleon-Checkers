@@ -18,8 +18,11 @@ def turns(turn):
 def playerMove(pieces):
     _move = move()
     _move.pieces = pieces
-    _move.getMove()
-    moveInvalid = gameboard.checkMove(_move)
+    moveInvalid = True
+    while(moveInvalid):
+        _move.getMove()
+        moveInvalid = gameboard.checkMove(_move)
+        
     gameboard.updatePiece(_move)
 
 def computerMove(pieces):

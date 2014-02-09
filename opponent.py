@@ -8,8 +8,6 @@ class opponent:
         self.color = color
         self.pieceProgram = None
         self.moveProgram = None
-        self.genPieceProgram()
-        self.genMoveProgram()
 
     def move(self, validPieces):
         pieceMax, moveMax = None, None

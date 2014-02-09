@@ -26,7 +26,6 @@ def playerMove(pieces):
     gameboard.updatePiece(_move)
 
 def computerMove(pieces):
-    #validPieces = gameboard.getMovablePieces(comp.color)
     moveList = []
 
     for piece in pieces:
@@ -72,7 +71,8 @@ def playerGame():
 
 parser = argparse.ArgumentParser(description='Input commands.')
 
-parser.add_argument('--color', default='Red', choices=['Red', 'Black'], help='Select a color you wish to play agaisnt the computer r or b')
+parser.add_argument('-color', default='Red', choices=['Red', 'Black'], help='Select a color you wish to play agaisnt the computer r or b')
+parser.add_argument('-load', default='y', choices=['y','n'], help='Load the last used program[y] or generate a new one[n]')
 #add another argument for playing agaisnt the computer defaulting to yes
 
 
@@ -87,4 +87,13 @@ if args['color']=='Red':
     comp = opponent('Black')
 elif args['color']=='Black':
     comp = opponent('Red')
+
+if args['load']=='y':
+    comp.loadProgram()
+else:
+    comp.genPieceProgram()
+    comp.genMoveProgram()
+    comp.saveProgram()
+
+comp.saveProgram()
 playerGame()

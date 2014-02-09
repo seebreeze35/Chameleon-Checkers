@@ -1,6 +1,6 @@
 #! /usr/bin/python
 from move import move
-import ai
+import ai, cloud, pickle
 
 class opponent:
     def __init__(self, color):
@@ -10,10 +10,6 @@ class opponent:
         self.moveProgram = None
         self.genPieceProgram()
         self.genMoveProgram()
-
-    #need to generate a move program
-    #get a list of valid moves from the give piece
-    #create the move from the moce program
 
     def move(self, validPieces):
         pieceMax, moveMax = None, None
@@ -38,7 +34,6 @@ class opponent:
         print 'Piece: '+str(p.x)+' '+str(p.y)
         print 'Move: '+str(m.mX)+' '+str(m.mY)
 
-       # _move.inputMove()
         return m
 
     def genPieceProgram(self):
@@ -56,3 +51,15 @@ class opponent:
         self.moveProgram = program
 
     
+    def saveProgram(self):
+        f = open('Piece.pickle', 'w')
+        blob = cloud.serialization.cloudpickle.dump(self.pieceProgram,f)
+        f.close()
+
+        f = open('Move.pickle', 'w')
+        blob = cloud.serialization.cloudpickle.dump(self.moveProgram,f)
+        f.close()
+    
+    def loadProgram(self):
+        self.pieceProgram = pickle.load(open("Piece.pickle", "rb"))
+        self.moveProgram = pickle.load(open("Move.pickle", "rb"))

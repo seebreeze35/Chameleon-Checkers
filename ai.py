@@ -4,6 +4,8 @@ from random import random, randint, choice
 from copy import deepcopy
 from math import log
 
+import json
+
 class fwrapper:
     def __init__(self, function, childcount, name):
         self.function = function

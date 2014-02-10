@@ -65,7 +65,10 @@ def playerGame():
 
         gameboard.printBoard()
         turn, pieces = turns(turn)
-
+        gameboard.moveCount +=1
+        if gameboard.moveCount == 60:
+            print 'Draw'
+            break
         gameLoop = gameboard.win()
 
 

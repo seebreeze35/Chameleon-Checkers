@@ -14,6 +14,7 @@ class board:
         self.blackDirection = None
         self.redDirection = None
         self.playerColor = color
+        self.moveCount = 0
         self.setup()
         
     def setup(self):
@@ -124,6 +125,7 @@ class board:
             print 'Captured '+spaceBetween.piece.color+' '+str(spaceBetween.piece.id)
             self.removePiece(spaceBetween.piece)
             spaceBetween.piece = None
+            self.moveCount = 0
             return False
 
     def checkMoveRange(self, _move):
@@ -183,14 +185,14 @@ class board:
             elif _move.piece.Type != 'King':
                 to_return = self.checkForward(_move)
             else:
-                to_return = False
+                to_return = False            
         else:
             print 'Space occupied!'
             to_return = True
 
-        if to_return == False:
-            if _move.mY == 7 or _move.mY == 0:
-                _move.piece.King()
+        if _move.mY == 7 or _move.mY == 0:
+            _move.piece.King()
+            to_return = False
 
         return to_return
 
@@ -341,7 +343,6 @@ class board:
             return False
         elif len(self.Red)==0:
             print 'Black wins!'
-
             return False
         else:
             return True

@@ -1,11 +1,12 @@
 #! /usr/bin/python
 
 from Tkinter import *
+import subprocess
 
 class Application(Frame):
 
-    def say_hi(self):
-        print 'hello world'
+    def train(self):
+        subprocess.call("./train.py")
 
     def createWidgets(self):
 
@@ -17,8 +18,8 @@ class Application(Frame):
    #     self.rowconfigure(5, pad=7)
 
         self.hi = Button(self)
-        self.hi['text'] = 'Hello'
-        self.hi['command'] = self.say_hi
+        self.hi['text'] = 'Train'
+        self.hi['command'] = self.train
         self.hi.grid(row=1, column=2)
 
         self.QUIT = Button(self)

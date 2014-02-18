@@ -95,3 +95,25 @@ def getSize(program):
         return False
     else:
         return size    
+
+
+def mutate(t, pc, probchange=0.1):
+    if random()<probchange:
+        return makerandomtree(pc)
+    else:
+        result = deepcopy(t)
+        if hasattr(t,"children"):
+            result.children = [mutate(c,pc,probchange) for c in t.children]
+        return result
+
+def crossover(t1, t2, probswap=0.7, top=1):
+    if random()<probchange:
+        return makerandomtree(pc)
+    else:
+        result=deepcopy(t)
+        if hasattr(t1,'children') and hasattr(t2, 'children'):
+            result.children=[crossover(c, choice(t2.children),probswap, 0)
+                             for c in t1.children]
+        return result
+
+

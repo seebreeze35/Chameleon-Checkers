@@ -39,6 +39,7 @@ def progMove(pieces, prog):
 
 def trainGame():
     moveCount = 0
+    winStatus = None
     gameboard.printBoard()
     
     gameLoop = True
@@ -55,16 +56,18 @@ def trainGame():
 
         if noMoves == True:
             print turn + ' has no moves left. Game over.'
-            break
+            if turn == 'Red':
+                return 0
+            else:
+                return 1
 
         gameboard.printBoard()
         turn, pieces = turns(turn)
         gameboard.moveCount +=1
         if gameboard.moveCount == 60:
             print 'Draw'
-            break
+            return 0
         gameLoop = gameboard.win()
-
 
 gameboard = board("Red")
 
@@ -77,4 +80,5 @@ trainee.loadProgram()
 trainer.genPieceProgram()
 trainer.genMoveProgram()
 
-trainGame()
+winStatus =trainGame()
+print winStatus

@@ -107,13 +107,11 @@ def mutate(t, pc, probchange=0.1):
         return result
 
 def crossover(t1, t2, probswap=0.7, top=1):
-    if random()<probchange:
-        return makerandomtree(pc)
+    if random()<probswap and not top:
+        return deepcopy(t2)
     else:
-        result=deepcopy(t)
+        result=deepcopy(t1)
         if hasattr(t1,'children') and hasattr(t2, 'children'):
             result.children=[crossover(c, choice(t2.children),probswap, 0)
                              for c in t1.children]
         return result
-
-

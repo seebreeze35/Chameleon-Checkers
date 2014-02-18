@@ -48,6 +48,10 @@ class opponent:
             size = ai.getSize(program)
         self.moveProgram = program
 
+    def train(self, trainer):
+        self.pieceProgram = ai.crossover(self.pieceProgram, trainer.pieceProgram)
+        self.moveProgram = ai.crossover(self.moveProgram, trainer.moveProgram)
+        
     
     def saveProgram(self):
         f = open('Piece.pickle', 'w')

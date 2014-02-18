@@ -81,4 +81,8 @@ trainer.genPieceProgram()
 trainer.genMoveProgram()
 
 winStatus =trainGame()
-print winStatus
+if winStatus == 0:
+    trainee.train(trainer) 
+    print 'trained'
+    
+trainee.saveProgram()

@@ -6,7 +6,8 @@ import subprocess
 class Application(Frame):
 
     def train(self):
-        subprocess.call("./train.py")
+        for i in range(500):
+            subprocess.call("./train.py")
 
     def hello(self):
         print 'hello'

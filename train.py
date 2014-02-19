@@ -5,6 +5,12 @@ from board import board
 from opponent import opponent
 from move import move
 
+toLog=None
+
+def log(statement):
+    if toLog:
+        print statement
+
 def turns(turn):
     if turn == 'Red':
         turn = 'Black'
@@ -12,7 +18,7 @@ def turns(turn):
     else:
         turn = 'Red'
         pieces = gameboard.Red
-    print 'It is '+turn+'\'s turn.'
+    log('It is '+turn+'\'s turn.')
     return turn, pieces
 
 
@@ -32,7 +38,7 @@ def progMove(pieces, prog):
         if gameboard.checkMove(m) != True:
             gameboard.updatePiece(m)
         else:
-            print 'not a valid move'
+            log('not a valid move')
         return False
     else:
         return True
@@ -45,7 +51,7 @@ def trainGame():
     gameLoop = True
     turn = 'Red'
     pieces = gameboard.Red
-    print 'It is Red\'s turn.'
+    log('It is Red\'s turn.')
 
     while gameLoop:
 
@@ -55,7 +61,7 @@ def trainGame():
             noMoves = progMove(pieces, trainer)
 
         if noMoves == True:
-            print turn + ' has no moves left. Game over.'
+            log(turn + ' has no moves left. Game over.')
             if turn == 'Red':
                 return 0
             else:
@@ -65,14 +71,24 @@ def trainGame():
         turn, pieces = turns(turn)
         gameboard.moveCount +=1
         if gameboard.moveCount == 60:
-            print 'Draw'
+            log('Draw')
             return 0
         gameLoop = gameboard.win()
 
-gameboard = board("Red")
+parser = argparse.ArgumentParser(description='Input commands.')
+parser.add_argument('-log', default='n', choices=['y','n'], help='Display output of the game?')
 
-trainee = opponent('Red')
-trainer = opponent('Black')
+args = vars(parser.parse_args())
+
+if args['log']=='y':
+    toLog=True
+else:
+    toLog=False
+
+gameboard = board("Red", toLog)
+
+trainee = opponent('Red', toLog)
+trainer = opponent('Black', toLog)
 
 
 trainee.loadProgram()
@@ -80,9 +96,15 @@ trainee.loadProgram()
 trainer.genPieceProgram()
 trainer.genMoveProgram()
 
+for i in range(100):
+    trainer.train()
+
 winStatus =trainGame()
 if winStatus == 0:
-    trainee.train(trainer) 
-    print 'trained'
+    print 'Red loses!'
+    trainee.train() 
+    log('trained')
+else:
+    print 'Red wins!'
     
 trainee.saveProgram()

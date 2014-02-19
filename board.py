@@ -6,7 +6,7 @@ from move import move
 
 class board:
     
-    def __init__(self, color):
+    def __init__(self, color, log):
         self.name = 'Board'
         self.spaces = []
         self.Red = []
@@ -15,6 +15,7 @@ class board:
         self.redDirection = None
         self.playerColor = color
         self.moveCount = 0
+        self.tolog=log
         self.setup()
         
     def setup(self):
@@ -22,6 +23,9 @@ class board:
         self.createPieces()
         self.setPieces()
 
+    def log(self, statement):
+        if self.tolog:
+            print statement
 
     def reset(self):
         self.setup()
@@ -113,16 +117,16 @@ class board:
             try:
                 self.Red.remove(piece)
             except:
-                print 'Fatal error removing piece'
+                self.log('Fatal error removing piece')
 
     def checkCapture(self, _move):
         spaceBetween = self.getSpaceBetween(_move)
         
         if spaceBetween.piece == None or spaceBetween.piece.color == _move.piece.color:
-            print 'Not a valid move!'
+            self.log('Not a valid move!')
             return True
         else:
-            print 'Captured '+spaceBetween.piece.color+' '+str(spaceBetween.piece.id)
+            self.log('Captured '+spaceBetween.piece.color+' '+str(spaceBetween.piece.id))
             self.removePiece(spaceBetween.piece)
             spaceBetween.piece = None
             self.moveCount = 0
@@ -132,7 +136,7 @@ class board:
         if abs(_move.mY - _move.piece.y) == 1:
             return False
         else:
-            print 'Not a valid move!'
+            self.log('Not a valid move!')
             return True
     
     def checkForward(self, _move):
@@ -141,13 +145,13 @@ class board:
             if m.mY > m.piece.y:
                 self.checkMoveRange(_move)
             else:
-                print 'Not a valid move!'
+                self.log('Not a valid move!')
                 return True
         def backward(m):
             if m.mY < m.piece.y:
                 self.checkMoveRange(_move)
             else:
-                print 'Not a valid move!'
+                self.log('Not a valid move!')
                 return True
 
         if _move.piece.color == 'Red':
@@ -169,25 +173,25 @@ class board:
         space = self.getSpace(_move.mX, _move.mY)
         if space.piece == None:
             if space.color != 'Black':
-                print 'Space not black!'
+                self.log('Space not black!')
                 to_return = True
             #check change in column
             elif _move.mX == _move.piece.x:
-                print 'Not a valid move!'
+                self.log('Not a valid move!')
                 to_return = True
             #check if a valid capture move
             elif abs(_move.mX-_move.piece.x)%2 == 0:
                 to_return = self.checkCapture(_move)
             elif abs(_move.mX-_move.piece.x)>1:
                 if abs(_move.mX-_move.piece.x)%2==1:
-                    print 'Not a valid move!'
+                    self.log('Not a valid move!')
                     to_return = True
             elif _move.piece.Type != 'King':
                 to_return = self.checkForward(_move)
             else:
                 to_return = False            
         else:
-            print 'Space occupied!'
+            self.log('Space occupied!')
             to_return = True
 
         if _move.mY == 7 or _move.mY == 0:
@@ -329,20 +333,21 @@ class board:
         
     def printBoard(self):
         count = 7
-        for row in self.spaces:
-            rowLines = ''
-            for space in row:
-                rowLines += space.printSpace()
-            print str(count)+' '+rowLines
-            count -=1
-        print "   0  1  2  3  4  5  6  7 "
+        if self.tolog:
+            for row in self.spaces:
+                rowLines = ''
+                for space in row:
+                    rowLines += space.printSpace()
+                print str(count)+' '+rowLines
+                count -=1
+            self.log("   0  1  2  3  4  5  6  7 ")
 
     def win(self):
         if len(self.Black)==0:
-            print 'Red wins!'
+            self.log('Red wins!')
             return False
         elif len(self.Red)==0:
-            print 'Black wins!'
+            self.log('Black wins!')
             return False
         else:
             return True

@@ -3,11 +3,17 @@ from move import move
 import ai, cloud, pickle
 
 class opponent:
-    def __init__(self, color):
+    def __init__(self, color, log):
         self.id = 0
         self.color = color
         self.pieceProgram = None
         self.moveProgram = None
+        self.toLog = log
+
+    def log(self,statement):
+        if self.toLog:
+            print statement
+
 
     def move(self, validPieces):
         pieceMax, moveMax = None, None
@@ -23,14 +29,14 @@ class opponent:
                 pieceIndex = valid
 
         for valid in pieceIndex[1]:
-            print str(valid.mX)  +' '+str(valid.mY)
+            #self.log(str(valid.mX)  +' '+str(valid.mY))
             num = self.moveProgram.evaluate([valid.mX, valid.mY])
             if num >moveMax or moveMax == None:
                 moveMax = num
                 m = valid
 
-        print 'Piece: '+str(p.x)+' '+str(p.y)
-        print 'Move: '+str(m.mX)+' '+str(m.mY)
+        self.log('Piece: '+str(p.x)+' '+str(p.y))
+        self.log('Move: '+str(m.mX)+' '+str(m.mY))
 
         return m
 
@@ -48,10 +54,11 @@ class opponent:
             size = ai.getSize(program)
         self.moveProgram = program
 
-    def train(self, trainer):
-        self.pieceProgram = ai.crossover(self.pieceProgram, trainer.pieceProgram)
-        self.moveProgram = ai.crossover(self.moveProgram, trainer.moveProgram)
-        
+    def train(self):
+        #self.pieceProgram = ai.crossover(self.pieceProgram, trainer.pieceProgram)
+        #self.moveProgram = ai.crossover(self.moveProgram, trainer.moveProgram)
+        self.pieceProgram = ai.mutate(self.pieceProgram,2)
+        self.moveProgram = ai.mutate(self.moveProgram,2)
     
     def saveProgram(self):
         f = open('Piece.pickle', 'w')

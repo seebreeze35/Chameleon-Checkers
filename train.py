@@ -96,15 +96,15 @@ trainee.loadProgram()
 trainer.genPieceProgram()
 trainer.genMoveProgram()
 
-for i in range(100):
-    trainer.train()
+#for i in range(100):
+ #   trainer.train()
 
 winStatus =trainGame()
 if winStatus == 0:
     print 'Red loses!'
-    trainee.train() 
-    log('trained')
+#    trainee.train() 
+#    log('trained')
 else:
     print 'Red wins!'
     
-trainee.saveProgram()
+#trainee.saveProgram()

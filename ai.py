@@ -5,6 +5,7 @@ from copy import deepcopy
 from math import log
 
 import json
+import subprocess
 
 class fwrapper:
     def __init__(self, function, childcount, name):
@@ -115,3 +116,51 @@ def crossover(t1, t2, probswap=0.7, top=1):
             result.children=[crossover(c, choice(t2.children),probswap, 0)
                              for c in t1.children]
         return result
+
+def scoreFunction(tree, s):
+    #need to call the train method with the given program
+    #need to save the program to train in a pickle file
+    dif = 0
+    for data in s:
+        v=tree.evaluate([data[0],data[1]])
+        dif+=abs(v-data[2])
+    return dif
+
+
+def getrankfunction(dataset):
+    def rankfunction(population):
+        scores=[(scoreFunction(t,dataset),t) for t in population]
+        scores.sort()
+        return scores
+    return rankfunction
+
+
+def evolve(pc, popsize, rankfunction, maxgen=500, 
+           mutationrate=0.1, breedingrate=0.4, pexp=0.7, pnew=0.05):
+    def selectionIndex():
+        return int(log(random()/log(pexp)))
+
+    population = [makerandomree(pc) for i in range(popsize)]
+    for i in range(maxgen):
+        scores = rankfunction(population)
+        print scores[0][0]
+        if scores[0][0]==0:
+            break
+
+        newpop=[scores[0][1],scores[1][1]]
+
+        while len(newpop)<popsize:
+            if random()>pnew:
+                newpop.append(mutate(
+                              crossover(scores[selectIndex()][1],
+                                        scores[selectIndex()][1],
+                                        probswap=breedingrate),
+                                        pc, probchange = mutationrate))
+            else:
+                newpop.append(makerandomtree(pc))
+
+        population=newpop
+    scores[0][1].display()
+    return scores[0][1]
+
+

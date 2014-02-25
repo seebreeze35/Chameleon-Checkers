@@ -120,11 +120,9 @@ def crossover(t1, t2, probswap=0.7, top=1):
 def scoreFunction(tree, s):
     #need to call the train method with the given program
     #need to save the program to train in a pickle file
-    dif = 0
-    for data in s:
-        v=tree.evaluate([data[0],data[1]])
-        dif+=abs(v-data[2])
-    return dif
+    
+    score =subprocess.check_output("./train.py")
+    return score
 
 
 def getrankfunction(dataset):

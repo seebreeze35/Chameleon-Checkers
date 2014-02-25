@@ -11,6 +11,17 @@ def log(statement):
     if toLog:
         print statement
 
+def score(red, black, winStatus):
+    redScore = 10*len(red)
+    blackScore = 15*len(black)
+    winScore=0
+    if winStatus == 1:
+        winScore=100
+    else:
+        winScore=-100
+    score = redScore-blackScore+winScore
+    return score
+
 def turns(turn):
     if turn == 'Red':
         turn = 'Black'
@@ -96,15 +107,9 @@ trainee.loadProgram()
 trainer.genPieceProgram()
 trainer.genMoveProgram()
 
-#for i in range(100):
- #   trainer.train()
-
 winStatus =trainGame()
-if winStatus == 0:
-    print 'Red loses!'
-#    trainee.train() 
-#    log('trained')
-else:
-    print 'Red wins!'
-    
-#trainee.saveProgram()
+
+points = score(gameboard.Red, gameboard.Black, winStatus)
+
+print points
+

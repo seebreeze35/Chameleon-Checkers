@@ -27,7 +27,7 @@ class move:
         #add error handling to prevent crash from not having a x or y value
         pieceInvalid = True
         while(pieceInvalid):
-            print 'Input piece'
+            print('Input piece')
             self.inX = raw_input("Select piece x: ")
             self.inY = raw_input("Select piece y: ")
             self.inX = int(self.inX)
@@ -35,7 +35,7 @@ class move:
             pieceInvalid = self.checkPiece()
 
     def inputMove(self):
-        print 'Move to?'
+        print('Move to?')
         self.mX = raw_input("Select x: ")
         self.mY = raw_input("Select y: ")
         self.mX = int(self.mX)
@@ -47,7 +47,7 @@ class move:
                 self.piece = piece
                 return False
     
-        print 'Not valid please enter another piece.'
+        print('Not valid please enter another piece.')
         return True
 
     def getMove(self):            
@@ -60,7 +60,7 @@ class move:
         self.inX = int(inX)
         self.inY = int(inY)
         if self.checkPiece() != False:
-            print 'computer failed'
+            print('computer failed')
             
         self.mX = int(mX)
         self.mY = int(mY)

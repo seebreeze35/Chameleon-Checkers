@@ -12,7 +12,7 @@ class opponent:
 
     def log(self,statement):
         if self.toLog:
-            print statement
+            print(statement)
 
 
     def move(self, validPieces):

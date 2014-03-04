@@ -22,10 +22,10 @@ class space:
 
     def checkPiece(self):
         if self.piece != None:
-            print '39158792845792845'
+            print('39158792845792845')
             x, y = self.piece.getPos()
             if self.x != x or self.y != y:
-                print 'todo'
+                print('todo')
         
     def printSpace(self):
         if self.piece !=None:

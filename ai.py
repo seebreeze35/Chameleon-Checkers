@@ -43,7 +43,7 @@ class paramnode:
         return inp[self.idx]
 
     def display(self, indent=0):
-        print '%sp%d' % (' '*indent,self.idx)
+        print ('%sp%d' % (' '*indent,self.idx))
 
     def getSize(self):
         return self.size
@@ -57,7 +57,7 @@ class constnode:
         return self.v
 
     def display(self, indent=0):
-        print '%s%d' % (' '*indent,self.v)
+        print ('%s%d' % (' '*indent,self.v))
 
     def getSize(self):
         return self.size
@@ -117,10 +117,7 @@ def crossover(t1, t2, probswap=0.7, top=1):
                              for c in t1.children]
         return result
 
-def scoreFunction(tree, s):
-    #need to call the train method with the given program
-    #need to save the program to train in a pickle file
-    
+def scoreFunction(tree, s):    
     score =subprocess.check_output("./train.py")
     return score
 
@@ -141,7 +138,7 @@ def evolve(pc, popsize, rankfunction, maxgen=500,
     population = [makerandomree(pc) for i in range(popsize)]
     for i in range(maxgen):
         scores = rankfunction(population)
-        print scores[0][0]
+        print(scores[0][0])
         if scores[0][0]==0:
             break
 

@@ -15,8 +15,8 @@ class piece:
         return self.x, self.y
 
     def checkStatus(self):
-        print self.inPlay
-        print str(self.x) +' '+str(self.y)
+        print(self.inPlay)
+        print(str(self.x) +' '+str(self.y))
         
     def setCurrentPos(self, x, y):
         self.x = x

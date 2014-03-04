@@ -25,7 +25,7 @@ class board:
 
     def log(self, statement):
         if self.tolog:
-            print statement
+            print(statement)
 
     def reset(self):
         self.setup()
@@ -338,7 +338,7 @@ class board:
                 rowLines = ''
                 for space in row:
                     rowLines += space.printSpace()
-                print str(count)+' '+rowLines
+                print (str(count)+' '+rowLines)
                 count -=1
             self.log("   0  1  2  3  4  5  6  7 ")
 

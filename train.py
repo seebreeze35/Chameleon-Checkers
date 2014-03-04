@@ -9,7 +9,7 @@ toLog=None
 
 def log(statement):
     if toLog:
-        print statement
+        print(statement)
 
 def score(red, black, winStatus):
     redScore = 10*len(red)
@@ -111,5 +111,5 @@ winStatus =trainGame()
 
 points = score(gameboard.Red, gameboard.Black, winStatus)
 
-print points
+print(points)
 

@@ -6,7 +6,7 @@ from opponent import opponent
 from move import move
 
 def log(statement):
-    print statement
+    print (statement)
 
 def turns(turn):
     if turn == 'Red':

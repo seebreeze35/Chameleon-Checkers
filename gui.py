@@ -8,10 +8,10 @@ class Application(Frame):
     def train(self):
         #subprocess.call("./train.py")
         test =subprocess.check_output("./train.py")
-        print 'Result: '+test
+        print('Result: '+test)
 
     def hello(self):
-        print 'hello'
+        print('hello')
 
     def createWidgets(self):
 

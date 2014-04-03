@@ -1,6 +1,7 @@
 #! /usr/bin/python
 from move import move
-import ai, cloud, pickle
+import ai
+import cloud, pickle
 
 class opponent:
     def __init__(self, color, log):
@@ -61,14 +62,14 @@ class opponent:
         self.moveProgram = ai.mutate(self.moveProgram,2)
     
     def saveProgram(self):
-        f = open('Piece.pickle', 'w')
+        f = open('core/Piece.pickle', 'w')
         blob = cloud.serialization.cloudpickle.dump(self.pieceProgram,f)
         f.close()
 
-        f = open('Move.pickle', 'w')
+        f = open('core/Move.pickle', 'w')
         blob = cloud.serialization.cloudpickle.dump(self.moveProgram,f)
         f.close()
     
     def loadProgram(self):
-        self.pieceProgram = pickle.load(open("Piece.pickle", "rb"))
-        self.moveProgram = pickle.load(open("Move.pickle", "rb"))
+        self.pieceProgram = pickle.load(open("core/Piece.pickle", "rb"))
+        self.moveProgram = pickle.load(open("core/Move.pickle", "rb"))

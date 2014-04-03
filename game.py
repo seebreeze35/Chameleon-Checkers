@@ -1,9 +1,9 @@
 #! /usr/bin/python
 
 import argparse
-from board import board
-from opponent import opponent
-from move import move
+from core.board import board
+from core.opponent import opponent
+from core.move import move
 
 def log(statement):
     print (statement)

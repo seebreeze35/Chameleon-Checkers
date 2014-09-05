@@ -4,8 +4,11 @@ from piece import piece
 from space import space
 from move import move
 
+#this needs to be a singleton
+#each object needs to get a reference to it
+
 class board:
-    
+
     def __init__(self, color, log):
         self.name = 'Board'
         self.spaces = []
@@ -40,8 +43,8 @@ class board:
 
     def createPieces(self):
         for ID in range(12):
-            self.Red.append(piece('Red', ID))
-            self.Black.append(piece('Black', ID))           
+            self.Red.append(piece('Red', ID, self))
+            self.Black.append(piece('Black', ID, self))           
 
     def setPieces(self):
         redIter = 0
@@ -57,7 +60,6 @@ class board:
                         space.setPiece(self.Black[Iter])
                         Iter +=1
             return Iter
-                    
 
         if self.playerColor == 'Black':  
             for row in range(8):
@@ -76,12 +78,14 @@ class board:
                     redIter = fillRow(row, redIter, 'Red')
                     self.redDirection = 'Up'
 
-    def getPiece(self, pieces, _move):
+    def getPiece(self, x, y):
         to_return = None
         
+        pieces = self.Red + self.Black
         for piece in pieces:
-            if piece.x == _move.inX and piece.y == _move.inY:
+            if piece.x == x and piece.y == y:
                 to_return = piece
+
         return to_return
 
     def getSpace(self, x, y):
@@ -91,26 +95,23 @@ class board:
             for space in row:
                 if space.x == x and space.y == y:
                     to_return = space
+
         return to_return
 
-    def getSpaceBetween(self, _move):
-        to_return = None
+    def spaceTaken(self, x, y):
+        #True means space is taken
+        #False means there is no piece on given space
+        to_return = True
 
-        def check(_move, x):
-            to_return = None
-            if _move.mY > _move.piece.y:
-                to_return = self.getSpace(x, _move.mY-1)
-            elif _move.mY < _move.piece.y:
-                to_return = self.getSpace(x, _move.mY+1)
-            return to_return
+        space_to_check = self.getSpace(x,y)
+        if space_to_check != None:
+            if space_to_check.piece == None:
+                to_return = False
 
-        if _move.mX > _move.piece.x:
-            to_return = check(_move, _move.mX-1)
-        elif _move.mX < _move.piece.x:
-            to_return = check(_move, _move.mX+1)
         return to_return
 
     def removePiece(self, piece):
+        #Todo improve this
         try:
             self.Black.remove(piece)
         except:
@@ -119,212 +120,32 @@ class board:
             except:
                 self.log('Fatal error removing piece')
 
-    def checkCapture(self, _move):
-        spaceBetween = self.getSpaceBetween(_move)
-        
-        if spaceBetween.piece == None or spaceBetween.piece.color == _move.piece.color:
-            self.log('Not a valid move!')
-            return True
-        else:
-            self.log('Captured '+spaceBetween.piece.color+' '+str(spaceBetween.piece.id))
-            self.removePiece(spaceBetween.piece)
-            spaceBetween.piece = None
-            self.moveCount = 0
-            return False
-
-    def checkMoveRange(self, _move):
-        if abs(_move.mY - _move.piece.y) == 1:
-            return False
-        else:
-            self.log('Not a valid move!')
-            return True
-    
-    def checkForward(self, _move):
-
-        def forward(m):
-            if m.mY > m.piece.y:
-                self.checkMoveRange(_move)
-            else:
-                self.log('Not a valid move!')
-                return True
-        def backward(m):
-            if m.mY < m.piece.y:
-                self.checkMoveRange(_move)
-            else:
-                self.log('Not a valid move!')
-                return True
-
-        if _move.piece.color == 'Red':
-            if self.redDirection == 'Up':
-                return forward(_move)
-            else:
-                return backward(_move)
-        elif _move.piece.color == 'Black':
-            if self.blackDirection == 'Up':
-                return forward(_move)
-            else:
-                return backward(_move)
-
-    #Todo this is big probably need to refactor this down to be easier to read
-    def checkMove(self, _move):
-        #True is bad 
-        #False is good
-        to_return = None
-        space = self.getSpace(_move.mX, _move.mY)
-        if space.piece == None:
-            if space.color != 'Black':
-                self.log('Space not black!')
-                to_return = True
-            #check change in column
-            elif _move.mX == _move.piece.x:
-                self.log('Not a valid move!')
-                to_return = True
-            #check if a valid capture move
-            elif abs(_move.mX-_move.piece.x)%2 == 0:
-                to_return = self.checkCapture(_move)
-            elif abs(_move.mX-_move.piece.x)>1:
-                if abs(_move.mX-_move.piece.x)%2==1:
-                    self.log('Not a valid move!')
-                    to_return = True
-            elif _move.piece.Type != 'King':
-                to_return = self.checkForward(_move)
-            else:
-                to_return = False            
-        else:
-            self.log('Space occupied!')
-            to_return = True
-
-        if _move.mY == 7 or _move.mY == 0:
-            _move.piece.King()
-            to_return = False
-
-        return to_return
-
-
-    def _checkjump(self, x, X, y, Y, piece):
-        to_return = None
-        if self._checkRanges(x,y) and self._checkRanges(X,Y):
-            jumpSpace = self.getSpace(X, Y)
-            spaceBetween = self.getSpace(x,y)
-            if jumpSpace:
-                if spaceBetween.piece:
-                    if not jumpSpace.piece and spaceBetween.piece.color != piece.color:
-                        _move = move()
-                        _move.noInputInit(X, Y, piece)
-                        to_return = _move
-        return to_return
-
-
-    def _checkmove(self, x, y, piece):
-        to_return = None
-
-        if self._checkRanges(x,y):
-            space = self.getSpace(x, y)
-            if space:
-                if not space.piece:
-                    _move = move()
-                    _move.noInputInit(x, y, piece)
-                    to_return = _move
-
-        return to_return
-
-
-    def _checkRanges(self, x, y):
-        to_return = True
-
-        if x > 7 or x < 0:
-            to_return = False
-        if y > 7 or y < 0:
-            to_return = False
-
-        return to_return
-        
-    def _directionMoveCheck(self, piece, direction):
-        if direction == 'Down':
-            y = piece.y-1
-        else:
-            y = piece.y+1
-
-        x = piece.x+1
-        m1 = self._checkmove(x,y,piece)
-
-        x = piece.x-1
-        m2 = self._checkmove(x,y,piece)
-
-        return m1, m2
-
-    def _directionJumpCheck(self, piece, direction):
-        if direction == 'Down':
-            Y = piece.y-2
-            y = Y+1
-        else:
-            Y = piece.y+2
-            y = Y-1
-
-        X = piece.x+2
-        x = X-1
-        
-        m1 = self._checkjump(x, X, y, Y, piece)
-
-        X = piece.x-2
-        x = X+1
-        m2 = self._checkjump(x, X, y, Y, piece)
-
-        return m1, m2
-        
-
-    def _checkDirection(self, piece, direction):
-        moveList = []
-        #check move
-        m1, m2, = self._directionMoveCheck(piece, direction)
-        if m1:
-            moveList.append(m1)
-        if m2:
-            moveList.append(m2)
-
-        #check capture
-        #check if theres an opposing piece in the next spot?
-        m1, m2 = self._directionJumpCheck(piece, direction)
-        if m1:
-            moveList.append(m1)
-        if m2:
-            moveList.append(m2)
-        return moveList
-
-    def getPieceMoves(self, piece):
-        direction = None
-        moveList = []
-
-        if piece.Type == 'Regular':
-            if piece.color == 'Red':
-                direction = self.redDirection
-            else:
-                direction = self.blackDirection
-            
-            moveList = self._checkDirection(piece, direction)
-
-        else:
-            #king check
-            #check move Up
-            temp = self._checkDirection(piece, 'Up')
-            if temp:
-                for m in temp:
-                    moveList.append(m)
-            #check move Down
-            temp = self._checkDirection(piece, 'Down')
-            if temp:
-                for m in temp:
-                    moveList.append(m)
-
-        return moveList
         
     def updatePiece(self, _move):
-        space = self.getSpace(_move.inX, _move.inY)
-        space.piece = None
+        if _move.moveType == 1:
+            self._regMove(_move)
+        elif _move.moveType == 2:
+            self._captureMove(_move)
+
+        return self
+
+    def _regMove(self,_move):
+        selectedSpace = self.getSpace(_move.inX, _move.inY)
+        moveSpace = self.getSpace(_move.mX, _move.mY)
         _move.piece.move(_move.mX, _move.mY)
-        space = self.getSpace(_move.mX, _move.mY)
-        space.setPiece(_move.piece)
-        
+        moveSpace.setPiece(_move.piece)
+        selectedSpace.piece = None
+
+    def _captureMove(self, _move):
+        selectedSpace = self.getSpace(_move.inX, _move.inY)
+        moveSpace = self.getSpace(_move.mX, _move.mY)
+        spaceBetween = _move.getSpaceBetween()
+        self.removePiece(spaceBetween.piece)
+        _move.piece.move(_move.mX, _move.mY)
+        moveSpace.setPiece(_move.piece)
+        self.log("Captured "+spaceBetween.piece.color+' '+str(spaceBetween.piece.id))
+        spaceBetween.piece = None
+        selectedSpace.piece = None
 
     def updateBoard(self):
         for row in self.spaces:
@@ -351,3 +172,4 @@ class board:
             return False
         else:
             return True
+

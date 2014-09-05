@@ -12,6 +12,7 @@ def turns(turn):
     if turn == 'Red':
         turn = 'Black'
         pieces = gameboard.Black
+        print len(gameboard.Black)
     else:
         turn = 'Red'
         pieces = gameboard.Red
@@ -19,41 +20,32 @@ def turns(turn):
     return turn, pieces
 
 def playerMove(pieces):
-    _move = move()
+    _move = move(gameboard, True)
     _move.pieces = pieces
-    moveInvalid = True
-    while(moveInvalid):
+    while(_move.isValidMove == False):
         _move.getMove()
-        moveInvalid = gameboard.checkMove(_move)
         
     gameboard.updatePiece(_move)
-
+    
 def computerMove(pieces):
-    moveList = []
+    pieceList = []
 
     for piece in pieces:
-        moves = gameboard.getPieceMoves(piece)
-        if moves:
-            moveList.append((piece, moves))
-
+        #piece.board = gameboard
+        hasValidMoves = piece.getPieceMoves()
+        if hasValidMoves == True:
+            pieceList.append(piece)
 #    print '-----'
  #   for m in moveList:
   #      for M in m[1]:
    #         print str(M.mX)+' '+str(M.mY)
    #x print '-----'
-            
-    m = comp.move(moveList)
-    m.pieces = pieces
-    m.piece = gameboard.getPiece(pieces, m)
 
-    #if moveInvalid = gameboard.checkMove(piece, int(m[2]), int(m[3]))
-    if gameboard.checkMove(m) != True:
-        gameboard.updatePiece(m)
-    else:
-        log('not a valid move')
+    _move = comp.move(pieceList)
+
+    gameboard.updatePiece(_move)
 
 def playerGame():
-    gameboard.printBoard()
     
     gameLoop = True
     turn = 'Red'
@@ -61,12 +53,14 @@ def playerGame():
     log('It is Red\'s turn.')
 
     while gameLoop:
+        gameboard.printBoard()
         if turn == args['color']:
+#            gameboard.printBoard()
             playerMove(pieces)
         else:
             computerMove(pieces)
 
-        gameboard.printBoard()
+        
         turn, pieces = turns(turn)
         gameboard.moveCount +=1
         if gameboard.moveCount == 60:

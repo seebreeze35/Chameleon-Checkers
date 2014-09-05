@@ -18,23 +18,23 @@ class opponent:
 
     def move(self, validPieces):
         pieceMax, moveMax = None, None
-        pieceIndex = None
+        selectedPiece = None
         p, m = None, None
 
         for valid in validPieces:
             #print str(valid[0].x)  +' '+str(valid[0].y) 
-            num = self.pieceProgram.evaluate([valid[0].x, valid[0].y])
+            num = self.pieceProgram.evaluate([valid.x, valid.y])
             if num >pieceMax or pieceMax == None:
                 pieceMax = num
-                p = valid[0]
-                pieceIndex = valid
+                p = valid
+                selectedPiece = valid
 
-        for valid in pieceIndex[1]:
+        for move in selectedPiece.moves:
             #self.log(str(valid.mX)  +' '+str(valid.mY))
-            num = self.moveProgram.evaluate([valid.mX, valid.mY])
+            num = self.moveProgram.evaluate([move.mX, move.mY])
             if num >moveMax or moveMax == None:
                 moveMax = num
-                m = valid
+                m = move
 
         self.log('Piece: '+str(p.x)+' '+str(p.y))
         self.log('Move: '+str(m.mX)+' '+str(m.mY))

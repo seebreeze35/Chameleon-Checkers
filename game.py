@@ -12,7 +12,6 @@ def turns(turn):
     if turn == 'Red':
         turn = 'Black'
         pieces = gameboard.Black
-        print len(gameboard.Black)
     else:
         turn = 'Red'
         pieces = gameboard.Red
@@ -29,9 +28,8 @@ def playerMove(pieces):
     
 def computerMove(pieces):
     pieceList = []
-
+    
     for piece in pieces:
-        #piece.board = gameboard
         hasValidMoves = piece.getPieceMoves()
         if hasValidMoves == True:
             pieceList.append(piece)
@@ -39,8 +37,8 @@ def computerMove(pieces):
  #   for m in moveList:
   #      for M in m[1]:
    #         print str(M.mX)+' '+str(M.mY)
-   #x print '-----'
-
+    # print '-----'
+ 
     _move = comp.move(pieceList)
 
     gameboard.updatePiece(_move)
@@ -53,9 +51,8 @@ def playerGame():
     log('It is Red\'s turn.')
 
     while gameLoop:
-        gameboard.printBoard()
         if turn == args['color']:
-#            gameboard.printBoard()
+            gameboard.printBoard()
             playerMove(pieces)
         else:
             computerMove(pieces)

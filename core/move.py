@@ -38,11 +38,11 @@ class move:
     def inputPiece(self):
         to_return = False
         while(self.piece == None):
-            print('Input piece')
-            input = raw_input("Piece xy: ")
+#            print('Input piece')
+            _in = raw_input("Piece xy: ")
             try:
-                self.inX = int(input[0])
-                self.inY = int(input[1])
+                self.inX = int(_in[0])
+                self.inY = int(_in[1])
                 to_return = True
             except:
                 self.log("Invald entry only numbers 0-9 are accepted")
@@ -52,15 +52,20 @@ class move:
 
     def inputMove(self):
         to_return = False
-        print('Move to?')
-        input = raw_input("Move to space xy: ")
-        try:
-            self.mX = int(input[0])
-            self.mY = int(input[1])
-            to_return = True
-        except:
-            self.log("Invald entry only numbers 0-9 are accepted")
-            
+        while self.isValidMove==False:
+            _in = raw_input("Move to space xy: ")
+            try:
+                self.mX = int(_in[0])
+                self.mY = int(_in[1])
+                to_return = True
+            except:
+                if len(_in)==0:
+                    self.piece = None
+                    self.getMove()
+                else:
+                    self.log("Invald entry only numbers 0-9 are accepted")
+            if to_return == True:
+                self.isValidMove = self.checkMove()
         return to_return
 
     def setMove(self, x, y):
@@ -68,11 +73,8 @@ class move:
         self.mY = y
 
     def getMove(self):            
-        #this is for player piece selection
-        #todo: need a way to undo a piece selection
         pieceValid = self.inputPiece()
         moveValid = self.inputMove()
-        self.isValidMove = self.checkMove()
 
     def checkMove(self):
         #True is bad 

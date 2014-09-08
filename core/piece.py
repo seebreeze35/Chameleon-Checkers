@@ -86,6 +86,8 @@ class piece:
             moveList.append(m2)
         return moveList
 
+    def checkForJump(self, moveList):
+        
 
     def _directionMoveCheck(self, direction):
         if direction == 'Down':

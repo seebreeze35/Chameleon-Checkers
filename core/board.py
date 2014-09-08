@@ -165,9 +165,11 @@ class board:
 
     def win(self):
         if len(self.Black)==0:
+            self.printBoard()
             self.log('Red wins!')
             return False
         elif len(self.Red)==0:
+            self.printBoard()
             self.log('Black wins!')
             return False
         else:

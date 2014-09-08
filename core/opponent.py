@@ -15,14 +15,12 @@ class opponent:
         if self.toLog:
             print(statement)
 
-
     def move(self, validPieces):
         pieceMax, moveMax = None, None
         selectedPiece = None
         p, m = None, None
 
-        for valid in validPieces:
-            #print str(valid[0].x)  +' '+str(valid[0].y) 
+        for valid in validPieces: 
             num = self.pieceProgram.evaluate([valid.x, valid.y])
             if num >pieceMax or pieceMax == None:
                 pieceMax = num
@@ -30,7 +28,6 @@ class opponent:
                 selectedPiece = valid
 
         for move in selectedPiece.moves:
-            #self.log(str(valid.mX)  +' '+str(valid.mY))
             num = self.moveProgram.evaluate([move.mX, move.mY])
             if num >moveMax or moveMax == None:
                 moveMax = num

@@ -8,6 +8,23 @@ from core.move import move
 def log(statement):
     print (statement)
 
+
+def checkForCaptures(pieceList):
+    to_return = pieceList
+    
+    captureList = []
+
+    for piece in pieceList:
+        for _move in piece.moves:
+            if _move.moveType == 2:
+                captureList.append(piece)
+                continue
+
+    if captureList != []:
+        to_return = captureList
+
+    return to_return
+
 def turns(turn):
     if turn == 'Red':
         turn = 'Black'
@@ -21,9 +38,22 @@ def turns(turn):
 def playerMove(pieces):
     _move = move(gameboard, True)
     _move.pieces = pieces
+    
+    for piece in pieces:
+        piece.getPieceMoves()
+    
     while(_move.isValidMove == False):
         _move.getMove()
         
+        #check to see if there is a valid capture move
+        #forced player to make capture if one exists
+        for piece in pieces:
+            piece.getPieceMoves()
+            if piece.hasCaptures == True and _move.moveType != 2:
+                log("Must make capture move")
+                _move.isValidMove = False
+                _move.piece = None
+    
     gameboard.updatePiece(_move)
     
 def computerMove(pieces):
@@ -33,11 +63,8 @@ def computerMove(pieces):
         hasValidMoves = piece.getPieceMoves()
         if hasValidMoves == True:
             pieceList.append(piece)
-#    print '-----'
- #   for m in moveList:
-  #      for M in m[1]:
-   #         print str(M.mX)+' '+str(M.mY)
-    # print '-----'
+
+    pieceList = checkForCaptures(pieceList)
  
     _move = comp.move(pieceList)
 

@@ -32,6 +32,10 @@ def turns(turn):
     else:
         turn = 'Red'
         pieces = gameboard.Red
+
+    for piece in pieces:
+        piece.hasCaptures = False
+
     log('It is '+turn+'\'s turn.')
     return turn, pieces
 

@@ -96,7 +96,7 @@ class move:
                     to_return = self.checkCapture()
                 else:
                     self.log('Not a valid move!1')
-                    return False
+                    to_return =  False
             elif abs(self.mX-self.piece.x)>1:
                 if abs(self.mX-self.piece.x)%2==1:
                     self.log('Not a valid move!2')
@@ -105,14 +105,16 @@ class move:
                 to_return = self.checkAdvance()
             #Todo this is a check for king moves
             else:
-                print 'King move check'
                 to_return = True           
         else:
             self.log('Space occupied!')
             to_return = False
             
-        if self.mY == 7 or self.mY == 0:
-            print 'king'
+        if self.mY == 8 and self.piece.color == "Red":
+            self.piece.King()
+            to_return = True
+
+        elif self.mY == 0 and self.piece.color == "Black":
             self.piece.King()
             to_return = True
             
@@ -124,25 +126,38 @@ class move:
         return to_return
 
     def checkAdvance(self):
+        to_return = False
 
-        def forward(self):
+        def forward():
+            to_return = False
             if self.mY > self.piece.y:
-                return self.checkMoveRange()
+                to_return =  self.checkMoveRange()
+            else:
+                self.log("Non king piece cannot move in reverse")
+            return to_return
 
-        def backward(self):
+        def backward():
+            to_return = False
             if self.mY < self.piece.y:
-                return self.checkMoveRange()
+                to_return = self.checkMoveRange()
+            else:
+                self.log("Non king piece cannot move in reverse")
+            return to_return
+
 
         if self.piece.color == 'Red':
             if self.board.redDirection == 'Up':
-                return forward(self)
+                to_return = forward()
             else:
-                return backward(self)
+                to_return =backward()
+
         elif self.piece.color == 'Black':
             if self.board.blackDirection == 'Up':
-                return forward(self)
+                to_return = forward()
             else:
-                return backward(self)
+                to_return = backward()
+
+        return to_return
 
     def checkMoveRange(self):
         if abs(self.mY - self.piece.y) == 1:

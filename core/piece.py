@@ -18,6 +18,7 @@ class piece:
         self.Type = 'Regular'
         self.moves = []
         self.board = board
+        self.hasCaptures = False
         
     def getPos(self):
         return self.x, self.y
@@ -65,6 +66,7 @@ class piece:
 
         if self.moves != []:
             to_return = True
+            self.checkForJumps()
 
         return to_return
 
@@ -84,10 +86,16 @@ class piece:
             moveList.append(m1)
         if m2:
             moveList.append(m2)
+
         return moveList
 
-    def checkForJump(self, moveList):
-        
+    def checkForJumps(self):
+        #This checks for any jump moves if so it returns only a list 
+        #of jumps
+        moves = filter(lambda m: m.moveType == 2, self.moves)
+        if moves != []:
+            self.moves = moves
+            self.hasCaptures = True
 
     def _directionMoveCheck(self, direction):
         if direction == 'Down':

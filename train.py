@@ -11,6 +11,32 @@ def log(statement):
     if toLog:
         print(statement)
 
+def checkForCaptures(pieceList):
+    to_return = pieceList
+    
+    captureList = []
+
+    for piece in pieceList:
+        for _move in piece.moves:
+            if _move.moveType == 2:
+                captureList.append(piece)
+                continue
+
+    if captureList != []:
+        to_return = captureList
+
+    return to_return
+
+def checkForMoves(pieceList):
+    to_return = False
+
+    for piece in pieceList:
+        if piece.moves != []:
+            to_return = True
+            break
+
+    return to_return
+
 def score(red, black, winStatus):
     redScore = 10*len(red)
     blackScore = 15*len(black)
@@ -29,32 +55,35 @@ def turns(turn):
     else:
         turn = 'Red'
         pieces = gameboard.Red
+
     log('It is '+turn+'\'s turn.')
+
     return turn, pieces
 
 
 def progMove(pieces, prog):
-    moveList = []
+    to_return = False
+    pieceList = []
 
     for piece in pieces:
-        moves = gameboard.getPieceMoves(piece)
-        if moves:
-            moveList.append((piece, moves))
+        hasValidMoves = piece.getPieceMoves()
+        if hasValidMoves == True:
+            pieceList.append(piece)
 
-    if moveList != []:
-        m = prog.move(moveList)
-        m.pieces = pieces
-        m.piece = gameboard.getPiece(pieces, m)
-    
-        if gameboard.checkMove(m) != True:
-            gameboard.updatePiece(m)
-        else:
-            log('not a valid move')
-        return False
-    else:
-        return True
+    if checkForMoves(pieceList) == True:
+        pieceList = checkForCaptures(pieceList)
+
+        _move = prog.move(pieceList)
+        
+        gameboard.updatePiece(_move)
+        
+        to_return = True
+            
+    return to_return
 
 def trainGame():
+    to_return = 0
+
     moveCount = 0
     winStatus = None
     gameboard.printBoard()
@@ -65,26 +94,29 @@ def trainGame():
     log('It is Red\'s turn.')
 
     while gameLoop:
-
+        gameboard.printBoard()
         if turn == 'Red':
-            noMoves = progMove(pieces, trainee)
+            validTurn = progMove(pieces, trainee)
         else:
-            noMoves = progMove(pieces, trainer)
+            validTurn = progMove(pieces, trainer)
 
-        if noMoves == True:
+        if validTurn  == False:
             log(turn + ' has no moves left. Game over.')
             if turn == 'Red':
-                return 0
+                to_return = 0
             else:
-                return 1
+                to_return = 1
+            break
 
-        gameboard.printBoard()
-        turn, pieces = turns(turn)
         gameboard.moveCount +=1
+        turn, pieces = turns(turn)
+
         if gameboard.moveCount == 60:
             log('Draw')
-            return 0
+            to_return = 0
         gameLoop = gameboard.win()
+
+    return to_return
 
 parser = argparse.ArgumentParser(description='Input commands.')
 parser.add_argument('-log', default='n', choices=['y','n'], help='Display output of the game?')
@@ -111,5 +143,5 @@ winStatus =trainGame()
 
 points = score(gameboard.Red, gameboard.Black, winStatus)
 
-print(points)
+print points
 

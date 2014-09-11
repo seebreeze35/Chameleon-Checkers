@@ -35,11 +35,17 @@ class piece:
         self.x = x
         self.y = y
 
+    def clean(self):
+        self.hasCaptures = False
+        self.moves = []
+
     def King(self):
         self.Type = 'King'        
 
     def getPieceMoves(self):
         direction = None
+
+        self.clean()
 
         if self.Type == 'Regular':
             if self.color == 'Red':
@@ -67,7 +73,7 @@ class piece:
         if self.moves != []:
             to_return = True
             self.checkForJumps()
-
+            
         return to_return
 
     def _checkDirection(self, direction):
@@ -149,11 +155,12 @@ class piece:
     def _createMove(self, x, y):
         to_return = None
         if self._checkRanges(self.x, self.y) and self._checkRanges(x,y):
-            _move = move(self.board, False)
-            _move.noInputInit(self.x, self.y, self)
-            _move.setMove(x,y)
-            _move.checkMove()
-            if _move.isValidMove:
-                to_return = _move
+            if self.x != x and self.y != y:
+                _move = move(self.board, False)
+                _move.noInputInit(self.x, self.y, self)
+                _move.setMove(x,y)
+                _move.checkMove()
+                if _move.isValidMove:
+                    to_return = _move
 
         return to_return

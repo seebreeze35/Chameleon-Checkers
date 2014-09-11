@@ -38,7 +38,6 @@ class move:
     def inputPiece(self):
         to_return = False
         while(self.piece == None):
-#            print('Input piece')
             _in = raw_input("Piece xy: ")
             try:
                 self.inX = int(_in[0])
@@ -110,13 +109,15 @@ class move:
             self.log('Space occupied!')
             to_return = False
             
-        if self.mY == 8 and self.piece.color == "Red":
-            self.piece.King()
-            to_return = True
+        if self.mY == 7 and self.piece.color == "Red":
+            if to_return == True:
+                self.piece.King()
+                to_return = True
 
         elif self.mY == 0 and self.piece.color == "Black":
-            self.piece.King()
-            to_return = True
+            if to_return == True:
+                self.piece.King()
+                to_return = True
             
         self.isValidMove = to_return
 

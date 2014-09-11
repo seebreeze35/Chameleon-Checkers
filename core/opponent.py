@@ -33,7 +33,7 @@ class opponent:
                 moveMax = num
                 m = move
 
-        self.log('Piece: '+str(p.x)+' '+str(p.y))
+        self.log('Piece: '+str(m.inX)+' '+str(m.inY))
         self.log('Move: '+str(m.mX)+' '+str(m.mY))
 
         return m

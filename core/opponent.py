@@ -1,15 +1,18 @@
 #! /usr/bin/python
 from move import move
 import ai
+#dep
 import cloud, pickle
+import hashlib
 
 class opponent:
-    def __init__(self, color, log):
+    def __init__(self, color, seed, log):
         self.id = 0
         self.color = color
         self.pieceProgram = None
         self.moveProgram = None
         self.toLog = log
+        self.seed = seed
 
     def log(self,statement):
         if self.toLog:
@@ -40,16 +43,14 @@ class opponent:
 
     def genPieceProgram(self):
         size = False
-        while (size == False):
-            program = ai.makerandomtree(2)
-            size = ai.getSize(program)
+        self.seed.setParsable(self.seed.pieceSeed)
+        program = ai.makeTree(self.seed)
         self.pieceProgram = program
 
     def genMoveProgram(self):
         size = False
-        while (size == False):
-            program = ai.makerandomtree(2)
-            size = ai.getSize(program)
+        self.seed.setParsable(self.seed.moveSeed)
+        program = ai.makeTree(self.seed)
         self.moveProgram = program
 
     def train(self):
@@ -57,7 +58,8 @@ class opponent:
         #self.moveProgram = ai.crossover(self.moveProgram, trainer.moveProgram)
         self.pieceProgram = ai.mutate(self.pieceProgram,2)
         self.moveProgram = ai.mutate(self.moveProgram,2)
-    
+
+    #dep
     def saveProgram(self):
         f = open('core/Piece.pickle', 'w')
         blob = cloud.serialization.cloudpickle.dump(self.pieceProgram,f)
@@ -67,6 +69,8 @@ class opponent:
         blob = cloud.serialization.cloudpickle.dump(self.moveProgram,f)
         f.close()
     
+    #dep
     def loadProgram(self):
         self.pieceProgram = pickle.load(open("core/Piece.pickle", "rb"))
-        self.moveProgram = pickle.load(open("core/Move.pickle", "rb"))
+        self.moveProgram = pickle.load(open("core/Move.pickle", "rb"))            
+

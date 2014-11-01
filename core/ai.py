@@ -7,6 +7,10 @@ from math import log
 import json
 import subprocess
 
+import string
+
+from core.seed import seed
+
 class fwrapper:
     def __init__(self, function, childcount, name):
         self.function = function
@@ -14,11 +18,12 @@ class fwrapper:
         self.name = name
 
 class node:
-    def __init__(self, fw, children):
+    def __init__(self, fw, children, char):
         self.function = fw.function
         self.name = fw.name
         self.children = children
         self.size = 0
+        self.char = char
 
     def evaluate(self, inp):
         results = [n.evaluate(inp) for n in self.children]
@@ -35,9 +40,10 @@ class node:
         return self.size
 
 class paramnode:
-    def __init__(self, idx):
+    def __init__(self, idx, char):
         self.idx = idx
         self.size = 1
+        self.char = char
 
     def evaluate(self, inp):
         return inp[self.idx]
@@ -49,9 +55,10 @@ class paramnode:
         return self.size
 
 class constnode:
-    def __init__(self, v):
+    def __init__(self, v, char):
         self.v = v
         self.size = 1
+        self.char = char
 
     def evaluate(self, inp):
         return self.v
@@ -84,11 +91,73 @@ def makerandomtree(pc, maxdepth=4, fpr=0.5, ppr=0.6):
         f=choice(flist)
         children = [makerandomtree(pc, maxdepth-1, fpr, ppr)
                     for i in range(f.childcount)]
-        return node(f, children)
+        return node(f, children, None)
     elif random()<ppr:
-        return paramnode(randint(0,pc-1))
+        return paramnode(randint(0,pc-1), None)
     else:
-        return constnode(randint(0,10))
+        return constnode(randint(0,10), None)
+
+
+def makeTree(seed, maxDepth = 4):
+    parsedSeed = seed.getParsableSeed()
+    currChar =parsedSeed[:1]
+    seed.setParsableSeed(parsedSeed[1:])
+
+    _node = None
+
+    if len(seed.getParsableSeed()) !=0:
+
+        if (currChar in string.ascii_uppercase or currChar == seed.originalParsable[:1]) and maxDepth > 0:
+            func = flist[getNormalizedVal(currChar)]
+            
+            children = []
+            for i in range(func.childcount): 
+                childNode = makeTree(seed, maxDepth-1)
+                if childNode != None:
+                    children.append(childNode)
+
+            if len(children) != func.childcount:
+                extra = func.childcount-len(children)
+                for i in range(extra):
+                    children.append(constnode(1, None))
+
+#            children = [makeTree(seed, maxDepth-1) for i in range(func.childcount)]
+            _node = node(func, children, currChar)
+
+        elif currChar in string.ascii_lowercase:
+            if int(string.ascii_lowercase.index(currChar)) % 2 ==0:
+                _node = paramnode(0, currChar)
+
+            else:
+                _node = paramnode(1, currChar)
+
+        else:
+            if currChar in string.digits:
+                _node = constnode(int(currChar), currChar)
+            elif currChar in string.punctuation:
+                _node = constnode(int(string.punctuation.index(currChar)/9), currChar)
+            elif currChar in string.ascii_uppercase:
+                _node = constnode(int(string.ascii_uppercase.index(currChar)), currChar)
+
+    return _node
+
+
+def getNormalizedVal(char):
+    retVal = None
+
+    if char in string.ascii_uppercase:
+        retVal = int(string.ascii_uppercase.index(char)/4)
+    elif char in string.ascii_lowercase:
+        retVal = int(string.ascii_lowercase.index(char)/4)
+    elif char in string.punctuation:
+        retVal = int(string.punctuation.index(char)/4)
+    else:
+        retVal = int(int(char)/4)
+
+    if retVal > 4:
+        retVal = 4
+
+    return retVal
 
 def getSize(program):
     size = program.getSize()

@@ -1,9 +1,13 @@
 #! /usr/bin/python
 
 import argparse
+import base64
+import random
+import string
 from core.board import board
 from core.opponent import opponent
 from core.move import move
+from core.seed import seed
 
 def log(statement):
     print (statement)
@@ -100,24 +104,27 @@ def playerGame():
 parser = argparse.ArgumentParser(description='Input commands.')
 
 parser.add_argument('-color', default='Red', choices=['Red', 'Black'], help='Select a color you wish to play agaisnt the computer r or b')
-parser.add_argument('-load', default='y', choices=['y','n'], help='Load the last used program[y] or generate a new one[n]')
+
+parser.add_argument('-seed', default='', help='Seed value to generate the opponent')
 
 args = vars(parser.parse_args())
 
-
 gameboard = board(args['color'], True)
 
+
+
+if args['seed'] == "":
+    val = None
+
+elif args['seed'] != "":
+    val = args['seed']
+
 if args['color']=='Red':
-    comp = opponent('Black', True)
+    comp = opponent('Black', seed(val), True)
 elif args['color']=='Black':
-    comp = opponent('Red', True)
+    comp = opponent('Red', seed(val), True)
 
-if args['load']=='y':
-    comp.loadProgram()
-else:
-    comp.genPieceProgram()
-    comp.genMoveProgram()
-    comp.saveProgram()
+comp.genPieceProgram()
+comp.genMoveProgram()
 
-comp.saveProgram()
 playerGame()

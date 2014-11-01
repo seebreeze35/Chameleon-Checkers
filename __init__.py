@@ -6,3 +6,4 @@ core/
    opponent.py
    piece.py
    space.py
+   seed.py

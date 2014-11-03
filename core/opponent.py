@@ -1,9 +1,6 @@
 #! /usr/bin/python
 from move import move
 import ai
-#dep
-import cloud, pickle
-import hashlib
 
 class opponent:
     def __init__(self, color, seed, log):
@@ -58,19 +55,3 @@ class opponent:
         #self.moveProgram = ai.crossover(self.moveProgram, trainer.moveProgram)
         self.pieceProgram = ai.mutate(self.pieceProgram,2)
         self.moveProgram = ai.mutate(self.moveProgram,2)
-
-    #dep
-    def saveProgram(self):
-        f = open('core/Piece.pickle', 'w')
-        blob = cloud.serialization.cloudpickle.dump(self.pieceProgram,f)
-        f.close()
-
-        f = open('core/Move.pickle', 'w')
-        blob = cloud.serialization.cloudpickle.dump(self.moveProgram,f)
-        f.close()
-    
-    #dep
-    def loadProgram(self):
-        self.pieceProgram = pickle.load(open("core/Piece.pickle", "rb"))
-        self.moveProgram = pickle.load(open("core/Move.pickle", "rb"))            
-

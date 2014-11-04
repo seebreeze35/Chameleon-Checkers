@@ -4,6 +4,7 @@ import argparse
 from core.board import board
 from core.opponent import opponent
 from core.move import move
+from core.seed import seed
 
 toLog=None
 
@@ -120,6 +121,8 @@ def trainGame():
 
 parser = argparse.ArgumentParser(description='Input commands.')
 parser.add_argument('-log', default='n', choices=['y','n'], help='Display output of the game?')
+parser.add_argument('-seed', default='', help='Seed value to generate the opponent')
+
 
 args = vars(parser.parse_args())
 
@@ -128,16 +131,23 @@ if args['log']=='y':
 else:
     toLog=False
 
+if args['seed'] == "":
+    val = None
+
+elif args['seed'] != "":
+    val = args['seed']
+
+
 gameboard = board("Red", toLog)
 
-trainee = opponent('Red', toLog)
-trainer = opponent('Black', toLog)
-
-
-trainee.loadProgram()
+trainee = opponent('Red', seed(None), toLog)
+trainer = opponent('Black', seed(val), toLog)
 
 trainer.genPieceProgram()
 trainer.genMoveProgram()
+
+trainee.genPieceProgram()
+trainee.genMoveProgram()
 
 winStatus =trainGame()
 

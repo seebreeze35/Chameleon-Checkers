@@ -111,8 +111,6 @@ args = vars(parser.parse_args())
 
 gameboard = board(args['color'], True)
 
-
-
 if args['seed'] == "":
     val = None
 
